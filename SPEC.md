@@ -28,6 +28,11 @@ Railway_status_map/
   route_icons/                   # 路線記号SVGアイコン
     ico_rosen_*.svg
   station_metadata/
+    lines/                       # 路線別チャンク（優先）
+      kanto_tokaido.js
+      kanto_yokosuka.js
+      kanto_ito.js
+    group_direct_service.js      # 方面/サービス単位（移行中）
     line_yamanote.js
     line_chuo_rapid.js
     line_tokaido_kanto.js
@@ -82,11 +87,15 @@ Railway_status_map/
 - `toOperator`, `toLine`, `toStationName`
 
 ## 9. 駅メタデータ分割方針
+- 基本方針: **路線別ファイルを正** とする（`station_metadata/lines/*.js`）。
 - `station_metadata/*.js` で分割定義し、`window.stationMetadataChunks` に追加する。
 - `station_metadata.js` で全チャンクを統合し `window.stationMetadata` を生成する。
 - 同一駅が複数ファイルに出る場合
 - `nameKana` は後勝ち
 - `interchanges` は重複除去してマージ
+- 方面別/サービス別ファイルは移行期間中の互換レイヤとして利用し、最終的には路線別へ寄せる。
+- 同一路線が複数方面に含まれるケースは、路線別ファイル1つを参照する運用で重複定義を避ける。
+- JR東日本サイト上で支社単位に分割される路線は、同一路線ファイル内で `scope` を意識した追記、または将来的に `lines/<line>__<scope>.js` 分割を許容する。
 
 ## 10. 今後の拡充方針
 - 駅メタデータはユーザー要求の単位（方面/路線）で分割を整理する。
