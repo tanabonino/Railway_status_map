@@ -1270,6 +1270,8 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
       const stations = document.createElement("div");
       stations.className = "stations";
       stations.setAttribute("data-line-id", lineId);
+      const preservedScroll = previousScrollByLine[lineId];
+      let loopForScrollRestore = false;
 
       if (!line.stations.length) {
         const note = document.createElement("span");
@@ -1278,6 +1280,7 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
         stations.appendChild(note);
       } else {
         const isLoopLine = isLoopLineName(line.lineName);
+        loopForScrollRestore = isLoopLine;
         const baseStations = line.stations;
         const loopDisplayLaps = isLoopLine ? 3 : 1;
         const displayStations = [];
@@ -1362,18 +1365,19 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
             stations.appendChild(segment);
           }
         });
-        const preservedScroll = previousScrollByLine[lineId];
-        if (isLoopLine) {
-          setupPseudoInfiniteLoopScroll(stations, preservedScroll);
-        } else if (typeof preservedScroll === "number" && preservedScroll >= 0) {
-          stations.scrollLeft = preservedScroll;
-        }
       }
 
       card.appendChild(head);
       card.appendChild(metaBlock);
       card.appendChild(stations);
       ui.cards.appendChild(card);
+      if (line.stations.length) {
+        if (loopForScrollRestore) {
+          setupPseudoInfiniteLoopScroll(stations, preservedScroll);
+        } else if (typeof preservedScroll === "number" && preservedScroll >= 0) {
+          stations.scrollLeft = preservedScroll;
+        }
+      }
     });
 
     renderSelectedStationPanel();
