@@ -25,6 +25,8 @@ Railway_status_map/
   data_limited.js                # 在来線特急マスタ
   data_shinkansen.js             # 新幹線マスタ
   station_metadata.js            # 駅メタデータ統合ローダー
+  route_icons/                   # 路線記号SVGアイコン
+    ico_rosen_*.svg
   station_metadata/
     line_yamanote.js
     line_chuo_rapid.js
@@ -91,5 +93,12 @@ Railway_status_map/
 - 優先方面: 山手線 / 直通サービス / 東海道方面
 - 追加時は「駅名かな」と「主要乗換」をセットで登録する。
 
-## 11. 既知の注意点
+## 11. 路線記号アイコン運用
+- 路線記号は `railway_lines.js` の `ROUTE_SYMBOL_BY_LINE_NAME` で路線名に紐付ける。
+- アイコンファイルは `route_icons/ico_rosen_<symbol小文字>.svg` 命名で配置する。
+- アイコン表示対応は `railway_lines.js` の `ROUTE_ICON_BY_SYMBOL` に追加する。
+- アイコン未登録の記号はフォールバックとして色付き四角バッジ表示になる。
+- 実SVG差し替え時は同名ファイルを上書きすれば表示が更新される。
+
+## 12. 既知の注意点
 - `README.md` は現状との差分が残っている箇所があるため、運用時は本 `SPEC.md` を正とする。
