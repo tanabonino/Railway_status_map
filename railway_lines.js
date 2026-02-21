@@ -1156,19 +1156,32 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
         stations.appendChild(note);
       } else {
         const isLoopLine = isLoopLineName(line.lineName);
+        const baseStations = line.stations;
+        const loopDisplayLaps = isLoopLine ? 2 : 1;
+        const displayStations = [];
+        for (let lap = 0; lap < loopDisplayLaps; lap += 1) {
+          baseStations.forEach(function (st, idx) {
+            displayStations.push({
+              station: st,
+              baseIdx: idx,
+              lap: lap
+            });
+          });
+        }
         const ranges = Array.isArray(s.sectionRanges) && s.sectionRanges.length
           ? s.sectionRanges
           : rangesFromSectionText(s.section);
-        const affectedMap = buildAffectedSegments(line.stations, ranges, isLoopLine);
+        const affectedMap = buildAffectedSegments(baseStations, ranges, isLoopLine);
         const wholeLineByStatus = (!ranges.length && !cleanText(s.section) && (s.status === "suspend" || s.status === "stop"));
-        const segmentCount = isLoopLine ? line.stations.length : line.stations.length - 1;
+        const segmentCount = isLoopLine ? baseStations.length : baseStations.length - 1;
         if (wholeLineByStatus) {
           for (let i = 0; i < segmentCount; i += 1) {
             affectedMap[i] = true;
           }
         }
 
-        line.stations.forEach(function (st, idx) {
+        displayStations.forEach(function (entry, displayIdx) {
+          const st = entry.station;
           const station = document.createElement("span");
           station.className = "station";
 
@@ -1194,20 +1207,21 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
           });
 
           stations.appendChild(station);
-          if (idx < line.stations.length - 1 || (isLoopLine && idx === line.stations.length - 1)) {
+          if (displayIdx < displayStations.length - 1) {
             const segment = document.createElement("span");
             segment.className = "segment";
-            if (isLoopLine && idx === line.stations.length - 1) {
+            if (isLoopLine && entry.baseIdx === baseStations.length - 1) {
               segment.classList.add("segment-loop-close");
-              segment.title = "環状接続: " + st.name + "→" + line.stations[0].name;
+              segment.title = "環状接続: " + st.name + "→" + baseStations[0].name;
             }
 
             const topTrack = document.createElement("span");
             topTrack.className = "seg-track top";
             const bottomTrack = document.createElement("span");
             bottomTrack.className = "seg-track bottom";
+            const affectedIdx = isLoopLine ? entry.baseIdx : displayIdx;
 
-            if (affectedMap[idx]) {
+            if (affectedMap[affectedIdx]) {
               const statusClass = "status-" + normalizeStatus(s.status);
               const mode = s.directionMode || "unknown";
               applyTrackActivation(topTrack, bottomTrack, mode, statusClass);
