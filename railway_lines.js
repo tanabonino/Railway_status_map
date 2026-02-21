@@ -1159,6 +1159,12 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
           ? s.sectionRanges
           : rangesFromSectionText(s.section);
         const affectedMap = buildAffectedSegments(line.stations, ranges);
+        const wholeLineByStatus = (!ranges.length && !cleanText(s.section) && (s.status === "suspend" || s.status === "stop"));
+        if (wholeLineByStatus) {
+          for (let i = 0; i < line.stations.length - 1; i += 1) {
+            affectedMap[i] = true;
+          }
+        }
 
         line.stations.forEach(function (st, idx) {
           const station = document.createElement("span");
