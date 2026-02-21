@@ -6,19 +6,19 @@
   <title>鉄道運行状況マップ</title>
   <style>
     :root {
-      --bg: #f2f5f9;
+      --bg: #edf6f0;
       --panel: #ffffff;
-      --line: #d2d9e4;
-      --text: #1f2937;
-      --muted: #5f6b7a;
-      --ok: #0b7a3e;
+      --line: #c7ddce;
+      --text: #173424;
+      --muted: #4f6a59;
+      --ok: #008a4a;
       --warn: #9a6700;
       --stop: #b42318;
       --suspend: #7a1b17;
-      --accent: #0f4c81;
-      --accent-soft: #e6f0fb;
-      --hero: #0b223d;
-      --hero2: #163a5d;
+      --accent: #007f41;
+      --accent-soft: #e5f5eb;
+      --hero: #005d31;
+      --hero2: #007a3d;
     }
 
     * { box-sizing: border-box; }
@@ -28,15 +28,15 @@
       font-family: "Yu Gothic UI", "Yu Gothic", Meiryo, sans-serif;
       color: var(--text);
       background:
-        radial-gradient(circle at 85% 0%, rgba(159, 198, 242, 0.35) 0%, rgba(159, 198, 242, 0) 34%),
-        linear-gradient(180deg, #eef3f9 0%, var(--bg) 38%, #eef3f9 100%);
+        radial-gradient(circle at 85% 0%, rgba(120, 194, 146, 0.34) 0%, rgba(120, 194, 146, 0) 34%),
+        linear-gradient(180deg, #eef7f1 0%, var(--bg) 38%, #eef7f1 100%);
     }
 
     .hero {
       background:
         linear-gradient(135deg, var(--hero) 0%, var(--hero2) 75%),
         repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 2px, transparent 2px, transparent 10px);
-      color: #eff6ff;
+      color: #effcf2;
       border-bottom: 1px solid rgba(255,255,255,0.14);
     }
 
@@ -74,7 +74,7 @@
 
     .hero p {
       margin: 0;
-      color: #d8e5f7;
+      color: #d4efde;
       line-height: 1.7;
       max-width: 860px;
       font-size: 14px;
@@ -99,12 +99,12 @@
       display: block;
       font-size: 13px;
       margin-bottom: 3px;
-      color: #f8fbff;
+      color: #f2fff6;
     }
 
     .flow-card span {
       font-size: 12px;
-      color: #d8e5f7;
+      color: #d4efde;
       line-height: 1.45;
       display: block;
     }
@@ -123,7 +123,7 @@
       border: 1px solid var(--line);
       border-radius: 12px;
       padding: 16px;
-      box-shadow: 0 2px 12px rgba(11, 34, 61, 0.06);
+      box-shadow: 0 2px 12px rgba(0, 63, 31, 0.08);
       min-width: 0;
     }
 
@@ -138,8 +138,8 @@
 
     .primary-block {
       margin-top: 10px;
-      border: 1px solid #bfd0e6;
-      background: linear-gradient(180deg, #f5faff 0%, #eef5ff 100%);
+      border: 1px solid #b9dec6;
+      background: linear-gradient(180deg, #f3fcf6 0%, #eaf7ef 100%);
       border-radius: 10px;
       padding: 10px;
     }
@@ -189,9 +189,9 @@
     .direction-filter-wrap {
       margin: 6px 0 12px;
       padding: 8px;
-      border: 1px solid #dbe3ef;
+      border: 1px solid #d4e6da;
       border-radius: 10px;
-      background: #f8fbff;
+      background: #f5fbf7;
     }
 
     .direction-filters {
@@ -205,10 +205,10 @@
       width: auto;
       min-width: 84px;
       padding: 6px 10px;
-      border: 1px solid #c7d5e8;
+      border: 1px solid #bfd7c8;
       border-radius: 999px;
       background: #ffffff;
-      color: #29415f;
+      color: #1f4f34;
       font-size: 12px;
       font-weight: 700;
       cursor: pointer;
@@ -216,8 +216,8 @@
     }
 
     .dir-filter-btn.active {
-      border-color: #0f4c81;
-      background: #0f4c81;
+      border-color: var(--accent);
+      background: var(--accent);
       color: #ffffff;
     }
 
@@ -274,7 +274,7 @@
     .read-at {
       font-size: 15px;
       font-weight: 700;
-      color: #1f2937;
+      color: var(--text);
       line-height: 1.2;
       white-space: nowrap;
     }
@@ -318,21 +318,21 @@
     .direction-basis {
       display: inline-block;
       font-weight: 700;
-      color: #0b3a68;
+      color: #0f5b32;
       margin-bottom: 2px;
     }
 
     .meta-main {
-      border: 1px solid #e0e7f1;
+      border: 1px solid #d6e4da;
       border-radius: 8px;
-      background: #f9fbff;
+      background: #f5fbf7;
       padding: 8px 10px;
       font-size: 14px;
       line-height: 1.7;
     }
 
     .meta-source {
-      border: 1px solid #e0e7f1;
+      border: 1px solid #d6e4da;
       border-radius: 8px;
       background: #ffffff;
       padding: 8px 10px;
@@ -341,7 +341,7 @@
 
     .meta-label {
       font-size: 11px;
-      color: #64748b;
+      color: #5f7467;
       font-weight: 700;
       letter-spacing: 0.02em;
       margin-bottom: 4px;
@@ -352,7 +352,7 @@
       word-break: break-word;
       line-height: 1.5;
       font-size: 12px;
-      color: #334155;
+      color: #2f4838;
       max-height: 120px;
       overflow-y: auto;
       padding-right: 2px;
@@ -375,24 +375,24 @@
       border: 1px solid var(--line);
       border-radius: 999px;
       padding: 3px 8px;
-      background: #f8fbff;
+      background: #f5fbf7;
     }
 
     .legend-mark {
       width: 20px;
       height: 6px;
       border-radius: 99px;
-      border: 1px solid #cbd5e1;
-      background: #e2e8f0;
+      border: 1px solid #c4d8cb;
+      background: #dce9df;
     }
     .legend-mark.both {
       background: linear-gradient(to bottom, #d92d20 0 50%, #d92d20 50% 100%);
     }
     .legend-mark.up {
-      background: linear-gradient(to bottom, #d92d20 0 50%, #cbd5e1 50% 100%);
+      background: linear-gradient(to bottom, #d92d20 0 50%, #c4d8cb 50% 100%);
     }
     .legend-mark.down {
-      background: linear-gradient(to bottom, #cbd5e1 0 50%, #d92d20 50% 100%);
+      background: linear-gradient(to bottom, #c4d8cb 0 50%, #d92d20 50% 100%);
     }
 
     .stations {
@@ -407,11 +407,11 @@
       overflow-x: auto;
       overflow-y: hidden;
       padding: 10px 8px;
-      border: 1px solid #dbe3ef;
+      border: 1px solid #d4e6da;
       border-radius: 10px;
-      background: #f8fbff;
+      background: #f5fbf7;
       scrollbar-width: thin;
-      scrollbar-color: #94a3b8 #e5e7eb;
+      scrollbar-color: #8fa799 #dfe8e1;
       contain: content;
     }
 
@@ -419,11 +419,11 @@
       height: 8px;
     }
     .stations::-webkit-scrollbar-track {
-      background: #e5e7eb;
+      background: #dfe8e1;
       border-radius: 99px;
     }
     .stations::-webkit-scrollbar-thumb {
-      background: #94a3b8;
+      background: #8fa799;
       border-radius: 99px;
     }
 
@@ -496,11 +496,11 @@
       overflow: hidden;
       height: 6px;
       border-radius: 99px;
-      background: #cbd5e1;
-      border: 1px solid #cbd5e1;
+      background: #c4d8cb;
+      border: 1px solid #c4d8cb;
     }
     .seg-track.active { border-color: transparent; }
-    .seg-track.active.status-normal { background: #16a34a; }
+    .seg-track.active.status-normal { background: #008a4a; }
     .seg-track.active.status-delay { background: #ca8a04; }
     .seg-track.active.status-suspend { background: #9f1239; }
     .seg-track.active.status-stop { background: #b91c1c; }

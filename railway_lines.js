@@ -11,6 +11,7 @@ function normalizeLegacyLine(line) {
       return {
         id: st && st.id ? String(st.id) : "",
         name: st && st.name ? String(st.name) : "駅名未設定",
+        nameKana: st && (st.nameKana || st.kana) ? String(st.nameKana || st.kana) : "",
         interchanges: Array.isArray(st && st.interchanges) ? st.interchanges : []
       };
     })
@@ -47,6 +48,7 @@ function buildLineDataMap(railDataRoot, fallbackChunks) {
         return {
           id: sid,
           name: st && st.name ? String(st.name) : "駅名未設定",
+          nameKana: st && (st.nameKana || st.kana) ? String(st.nameKana || st.kana) : "",
           interchanges: sid && Array.isArray(interchanges[sid]) ? interchanges[sid] : (Array.isArray(st && st.interchanges) ? st.interchanges : [])
         };
       });
@@ -985,6 +987,11 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
           station.appendChild(stationName);
 
           const interchangeLabels = collectInterchangeLabels(st);
+          const stationKana = detectStationKana(st);
+          const titleParts = [];
+          if (stationKana) {
+            titleParts.push("カナ: " + stationKana);
+          }
           if (interchangeLabels.length) {
             const xferWrap = document.createElement("span");
             xferWrap.className = "station-xfers";
@@ -1001,8 +1008,11 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
               more.textContent = "+" + (interchangeLabels.length - displayCount);
               xferWrap.appendChild(more);
             }
-            station.title = "乗換: " + interchangeLabels.join(" / ");
             station.appendChild(xferWrap);
+            titleParts.push("乗換: " + interchangeLabels.join(" / "));
+          }
+          if (titleParts.length) {
+            station.title = titleParts.join("\n");
           }
 
           stations.appendChild(station);
@@ -1122,6 +1132,24 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
     });
 
     return labels;
+  }
+
+  function detectStationKana(station) {
+    const raw = cleanText((station && (station.nameKana || station.kana)) || "");
+    if (raw) {
+      return raw;
+    }
+    const name = cleanText(station && station.name);
+    if (!name || !/^[\u3040-\u309F\u30A0-\u30FFー・\s]+$/.test(name)) {
+      return "";
+    }
+    return katakanaToHiragana(name).replace(/\s+/g, "");
+  }
+
+  function katakanaToHiragana(input) {
+    return String(input || "").replace(/[\u30A1-\u30F6]/g, function (ch) {
+      return String.fromCharCode(ch.charCodeAt(0) - 0x60);
+    });
   }
 
   function rangesFromSectionText(sectionText) {
