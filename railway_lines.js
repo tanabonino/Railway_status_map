@@ -1161,6 +1161,7 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
   }
 
   function render() {
+    const previousScrollByLine = captureStationScrollPositions();
     ui.cards.innerHTML = "";
 
     const orderedIds = Object.keys(railwayLinesData).sort(function (a, b) {
@@ -1268,6 +1269,7 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
 
       const stations = document.createElement("div");
       stations.className = "stations";
+      stations.setAttribute("data-line-id", lineId);
 
       if (!line.stations.length) {
         const note = document.createElement("span");
@@ -1360,8 +1362,11 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
             stations.appendChild(segment);
           }
         });
+        const preservedScroll = previousScrollByLine[lineId];
         if (isLoopLine) {
-          setupPseudoInfiniteLoopScroll(stations);
+          setupPseudoInfiniteLoopScroll(stations, preservedScroll);
+        } else if (typeof preservedScroll === "number" && preservedScroll >= 0) {
+          stations.scrollLeft = preservedScroll;
         }
       }
 
@@ -1372,6 +1377,22 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
     });
 
     renderSelectedStationPanel();
+  }
+
+  function captureStationScrollPositions() {
+    const out = {};
+    if (!ui.cards) {
+      return out;
+    }
+    const lists = ui.cards.querySelectorAll(".stations[data-line-id]");
+    lists.forEach(function (el) {
+      const lineId = el.getAttribute("data-line-id");
+      if (!lineId) {
+        return;
+      }
+      out[lineId] = el.scrollLeft || 0;
+    });
+    return out;
   }
 
   function renderSelectedStationPanel() {
@@ -1597,7 +1618,7 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
     return /山手線/.test(lineName || "");
   }
 
-  function setupPseudoInfiniteLoopScroll(stationsEl) {
+  function setupPseudoInfiniteLoopScroll(stationsEl, preservedScrollLeft) {
     const anchors = stationsEl.querySelectorAll('.station[data-loop-base-idx="0"]');
     if (!anchors || anchors.length < 3) {
       return;
@@ -1610,7 +1631,11 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
       return;
     }
 
-    stationsEl.scrollLeft = lapWidth;
+    if (typeof preservedScrollLeft === "number" && preservedScrollLeft >= 0) {
+      stationsEl.scrollLeft = preservedScrollLeft;
+    } else {
+      stationsEl.scrollLeft = lapWidth;
+    }
     let adjusting = false;
 
     stationsEl.addEventListener("scroll", function () {
