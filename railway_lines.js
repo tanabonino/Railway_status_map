@@ -1157,7 +1157,7 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
       } else {
         const isLoopLine = isLoopLineName(line.lineName);
         const baseStations = line.stations;
-        const loopDisplayLaps = isLoopLine ? 2 : 1;
+        const loopDisplayLaps = isLoopLine ? 3 : 1;
         const displayStations = [];
         for (let lap = 0; lap < loopDisplayLaps; lap += 1) {
           baseStations.forEach(function (st, idx) {
@@ -1184,6 +1184,10 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
           const st = entry.station;
           const station = document.createElement("span");
           station.className = "station";
+          if (isLoopLine) {
+            station.setAttribute("data-loop-base-idx", String(entry.baseIdx));
+            station.setAttribute("data-loop-lap", String(entry.lap));
+          }
 
           const stationName = document.createElement("span");
           stationName.className = "station-name";
@@ -1236,6 +1240,9 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
             stations.appendChild(segment);
           }
         });
+        if (isLoopLine) {
+          setupPseudoInfiniteLoopScroll(stations);
+        }
       }
 
       card.appendChild(head);
@@ -1464,6 +1471,41 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
 
   function isLoopLineName(lineName) {
     return /山手線/.test(lineName || "");
+  }
+
+  function setupPseudoInfiniteLoopScroll(stationsEl) {
+    const anchors = stationsEl.querySelectorAll('.station[data-loop-base-idx="0"]');
+    if (!anchors || anchors.length < 3) {
+      return;
+    }
+
+    const a0 = anchors[0];
+    const a1 = anchors[1];
+    const lapWidth = a1.offsetLeft - a0.offsetLeft;
+    if (!(lapWidth > 0)) {
+      return;
+    }
+
+    stationsEl.scrollLeft = lapWidth;
+    let adjusting = false;
+
+    stationsEl.addEventListener("scroll", function () {
+      if (adjusting) {
+        return;
+      }
+      const x = stationsEl.scrollLeft;
+      if (x < lapWidth * 0.5) {
+        adjusting = true;
+        stationsEl.scrollLeft = x + lapWidth;
+        adjusting = false;
+        return;
+      }
+      if (x > lapWidth * 1.5) {
+        adjusting = true;
+        stationsEl.scrollLeft = x - lapWidth;
+        adjusting = false;
+      }
+    });
   }
 
   function buildAffectedSegments(stations, ranges, isLoopLine) {
