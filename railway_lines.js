@@ -1155,13 +1155,15 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
         note.textContent = "駅データ未設定";
         stations.appendChild(note);
       } else {
+        const isLoopLine = isLoopLineName(line.lineName);
         const ranges = Array.isArray(s.sectionRanges) && s.sectionRanges.length
           ? s.sectionRanges
           : rangesFromSectionText(s.section);
-        const affectedMap = buildAffectedSegments(line.stations, ranges);
+        const affectedMap = buildAffectedSegments(line.stations, ranges, isLoopLine);
         const wholeLineByStatus = (!ranges.length && !cleanText(s.section) && (s.status === "suspend" || s.status === "stop"));
+        const segmentCount = isLoopLine ? line.stations.length : line.stations.length - 1;
         if (wholeLineByStatus) {
-          for (let i = 0; i < line.stations.length - 1; i += 1) {
+          for (let i = 0; i < segmentCount; i += 1) {
             affectedMap[i] = true;
           }
         }
@@ -1192,9 +1194,13 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
           });
 
           stations.appendChild(station);
-          if (idx < line.stations.length - 1) {
+          if (idx < line.stations.length - 1 || (isLoopLine && idx === line.stations.length - 1)) {
             const segment = document.createElement("span");
             segment.className = "segment";
+            if (isLoopLine && idx === line.stations.length - 1) {
+              segment.classList.add("segment-loop-close");
+              segment.title = "環状接続: " + st.name + "→" + line.stations[0].name;
+            }
 
             const topTrack = document.createElement("span");
             topTrack.className = "seg-track top";
@@ -1326,7 +1332,7 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
 
 
   function directionBasisText(lineName) {
-    if (/山手線/.test(lineName || "")) {
+    if (isLoopLineName(lineName)) {
       return "方向基準: → 内回り / ← 外回り";
     }
     return "方向基準: → 下り / ← 上り";
@@ -1342,7 +1348,7 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
   }
 
   function directionByMode(mode, lineName) {
-    const loop = /山手線/.test(lineName || "");
+    const loop = isLoopLineName(lineName);
     const upLabel = loop ? "内回り" : "上り";
     const downLabel = loop ? "外回り" : "下り";
     if (mode === "both") {
@@ -1442,21 +1448,55 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
     return ranges;
   }
 
-  function buildAffectedSegments(stations, ranges) {
+  function isLoopLineName(lineName) {
+    return /山手線/.test(lineName || "");
+  }
+
+  function buildAffectedSegments(stations, ranges, isLoopLine) {
     const affected = {};
+    const count = Array.isArray(stations) ? stations.length : 0;
+    const loopEnabled = !!isLoopLine && count >= 2;
+
     (ranges || []).forEach(function (r) {
       const fromIdx = findStationIndex(stations, r.from);
       const toIdx = findStationIndex(stations, r.to);
       if (fromIdx < 0 || toIdx < 0 || fromIdx === toIdx) {
         return;
       }
-      const start = Math.min(fromIdx, toIdx);
-      const end = Math.max(fromIdx, toIdx);
-      for (let i = start; i < end; i += 1) {
-        affected[i] = true;
+
+      if (!loopEnabled) {
+        const start = Math.min(fromIdx, toIdx);
+        const end = Math.max(fromIdx, toIdx);
+        for (let i = start; i < end; i += 1) {
+          affected[i] = true;
+        }
+        return;
       }
+
+      const forward = loopSegmentPath(count, fromIdx, toIdx, true);
+      const backward = loopSegmentPath(count, fromIdx, toIdx, false);
+      const chosen = forward.length <= backward.length ? forward : backward;
+      chosen.forEach(function (idx) {
+        affected[idx] = true;
+      });
     });
     return affected;
+  }
+
+  function loopSegmentPath(stationCount, fromIdx, toIdx, forward) {
+    const segments = [];
+    let cur = fromIdx;
+    while (cur !== toIdx) {
+      if (forward) {
+        segments.push(cur);
+        cur = (cur + 1) % stationCount;
+      } else {
+        const prev = (cur - 1 + stationCount) % stationCount;
+        segments.push(prev);
+        cur = prev;
+      }
+    }
+    return segments;
   }
 
   function findStationIndex(stations, stationName) {
