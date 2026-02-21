@@ -150,6 +150,26 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
     suspend: { label: "運転見合わせ", badge: "b-suspend" },
     stop: { label: "運休", badge: "b-stop" }
   };
+  const ROUTE_SYMBOL_BY_LINE_NAME = {
+    "山手線": "JY",
+    "京浜東北線": "JK",
+    "東海道線": "JT",
+    "横須賀線": "JO",
+    "南武線": "JN",
+    "横浜線": "JH",
+    "湘南新宿ライン": "JS",
+    "上野東京ライン": "JU",
+    "埼京線": "JA",
+    "川越線": "JA",
+    "中央線快速電車": "JC",
+    "中央・総武各駅停車": "JB",
+    "総武快速線": "JO",
+    "京葉線": "JE",
+    "武蔵野線": "JM",
+    "常磐線": "JJ",
+    "常磐線快速電車": "JJ",
+    "常磐線各駅停車": "JL"
+  };
 
   const STALE_MINUTES = 20;
 
@@ -426,7 +446,8 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
 
 
   function formatLineTitle(line) {
-    const name = (line && line.lineName) || "";
+    const rawName = (line && line.lineName) || "";
+    const name = lineNameWithSymbol(rawName);
     const kana = (line && line.lineNameKana) || "";
     if (!name) {
       return "";
@@ -435,13 +456,24 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
       return name;
     }
     return name + " （" + kana + "）";
-  }  function displayName(lineId) {
+  }
+
+  function displayName(lineId) {
     const line = railwayLinesData[lineId];
     if (!line) {
       return lineId;
     }
     const scope = line.scope ? " / " + line.scope : "";
-    return "[" + line.area + "] " + line.lineName + scope;
+    return "[" + line.area + "] " + lineNameWithSymbol(line.lineName) + scope;
+  }
+
+  function lineNameWithSymbol(lineName) {
+    const name = String(lineName || "");
+    const symbol = ROUTE_SYMBOL_BY_LINE_NAME[name] || "";
+    if (!symbol || !name) {
+      return name;
+    }
+    return symbol + " " + name;
   }
 
   function createInitialState() {
@@ -575,7 +607,7 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
     const affectedLines = targetIds.map(function (lineId) {
       const line = railwayLinesData[lineId] || {};
       return line.lineName
-        ? (line.lineName + (line.scope ? "（" + line.scope + "）" : ""))
+        ? (lineNameWithSymbol(line.lineName) + (line.scope ? "（" + line.scope + "）" : ""))
         : lineId;
     });
 
@@ -1286,7 +1318,7 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
 
     const lineChip = document.createElement("span");
     lineChip.className = "station-detail-chip";
-    lineChip.textContent = selectedStation.lineName || "路線未設定";
+    lineChip.textContent = lineNameWithSymbol(selectedStation.lineName || "") || "路線未設定";
     sub.appendChild(lineChip);
 
     if (selectedStation.lineScope) {
