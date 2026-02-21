@@ -1,0 +1,707 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>鉄道運行状況マップ</title>
+  <style>
+    :root {
+      --bg: #f2f5f9;
+      --panel: #ffffff;
+      --line: #d2d9e4;
+      --text: #1f2937;
+      --muted: #5f6b7a;
+      --ok: #0b7a3e;
+      --warn: #9a6700;
+      --stop: #b42318;
+      --suspend: #7a1b17;
+      --accent: #0f4c81;
+      --accent-soft: #e6f0fb;
+      --hero: #0b223d;
+      --hero2: #163a5d;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Yu Gothic UI", "Yu Gothic", Meiryo, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 85% 0%, rgba(159, 198, 242, 0.35) 0%, rgba(159, 198, 242, 0) 34%),
+        linear-gradient(180deg, #eef3f9 0%, var(--bg) 38%, #eef3f9 100%);
+    }
+
+    .hero {
+      background:
+        linear-gradient(135deg, var(--hero) 0%, var(--hero2) 75%),
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 2px, transparent 2px, transparent 10px);
+      color: #eff6ff;
+      border-bottom: 1px solid rgba(255,255,255,0.14);
+    }
+
+    .hero-inner {
+      max-width: 1560px;
+      margin: 0 auto;
+      padding: 24px 16px 20px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .hero-top {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .chip {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.24);
+      letter-spacing: 0.02em;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: 30px;
+      line-height: 1.2;
+      letter-spacing: 0.02em;
+    }
+
+    .hero p {
+      margin: 0;
+      color: #d8e5f7;
+      line-height: 1.7;
+      max-width: 860px;
+      font-size: 14px;
+    }
+
+    .flow {
+      margin-top: 2px;
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .flow-card {
+      border: 1px solid rgba(255,255,255,0.22);
+      background: rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 10px 12px;
+      backdrop-filter: blur(1px);
+    }
+
+    .flow-card strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 3px;
+      color: #f8fbff;
+    }
+
+    .flow-card span {
+      font-size: 12px;
+      color: #d8e5f7;
+      line-height: 1.45;
+      display: block;
+    }
+
+    .wrap {
+      max-width: 1560px;
+      margin: 0 auto;
+      padding: 16px;
+      display: grid;
+      gap: 16px;
+      grid-template-columns: 460px minmax(0, 1fr);
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 12px rgba(11, 34, 61, 0.06);
+      min-width: 0;
+    }
+
+    h2 { margin: 0 0 8px; font-size: 16px; }
+
+    .hint {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .primary-block {
+      margin-top: 10px;
+      border: 1px solid #bfd0e6;
+      background: linear-gradient(180deg, #f5faff 0%, #eef5ff 100%);
+      border-radius: 10px;
+      padding: 10px;
+    }
+
+    textarea, select, input, button {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 14px;
+      font-family: inherit;
+      background: #fff;
+    }
+
+    textarea {
+      min-height: 170px;
+      resize: vertical;
+      line-height: 1.5;
+      background: #fbfdff;
+    }
+
+    button {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    button.secondary {
+      background: #fff;
+      color: var(--accent);
+    }
+
+    .stack { display: grid; gap: 8px; margin-top: 10px; }
+
+    .result {
+      font-size: 13px;
+      padding: 10px;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+
+    .direction-filter-wrap {
+      margin: 6px 0 12px;
+      padding: 8px;
+      border: 1px solid #dbe3ef;
+      border-radius: 10px;
+      background: #f8fbff;
+    }
+
+    .direction-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .dir-filter-btn {
+      width: auto;
+      min-width: 84px;
+      padding: 6px 10px;
+      border: 1px solid #c7d5e8;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #29415f;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .dir-filter-btn.active {
+      border-color: #0f4c81;
+      background: #0f4c81;
+      color: #ffffff;
+    }
+
+    .sub-title {
+      margin-top: 12px;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .cards { display: grid; gap: 12px; min-width: 0; }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      padding: 12px;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .card-stale {
+      border-color: #f59e0b;
+      box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.18) inset;
+    }
+
+    .stale-alert {
+      display: inline-block;
+      margin-top: 2px;
+      color: #b45309;
+      font-weight: 700;
+    }
+
+        .head { display: flex; gap: 8px; align-items: flex-start; min-width: 0; }
+    .head-main { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; min-width: 0; }
+    .head-right { margin-left: auto; display: flex; align-items: center; }
+
+    .line-name { font-size: 18px; font-weight: 700; }
+    .badge {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 84px;
+      font-size: 13px;
+      line-height: 1.2;
+      padding: 6px 10px;
+      border-radius: 12px;
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .read-at {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1f2937;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .btn-clear-card {
+      width: auto;
+      min-width: 72px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid #f1b8b8;
+      background: #fff5f5;
+      color: #9f1239;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .btn-clear-card:hover {
+      background: #ffe4e6;
+      border-color: #e78e8e;
+    }
+
+    .b-normal { background: var(--ok); }
+    .b-delay { background: var(--warn); }
+    .b-suspend { background: var(--suspend); }
+    .b-stop { background: var(--stop); }
+
+    .meta {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #374151;
+      line-height: 1.6;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: minmax(260px, 380px) minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+    }
+    .direction-basis {
+      display: inline-block;
+      font-weight: 700;
+      color: #0b3a68;
+      margin-bottom: 2px;
+    }
+
+    .meta-main {
+      border: 1px solid #e0e7f1;
+      border-radius: 8px;
+      background: #f9fbff;
+      padding: 8px 10px;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .meta-source {
+      border: 1px solid #e0e7f1;
+      border-radius: 8px;
+      background: #ffffff;
+      padding: 8px 10px;
+      min-height: 100%;
+    }
+
+    .meta-label {
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      margin-bottom: 4px;
+    }
+
+    .meta-source-text {
+      white-space: normal;
+      word-break: break-word;
+      line-height: 1.5;
+      font-size: 12px;
+      color: #334155;
+      max-height: 120px;
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+
+    .legend {
+      margin-top: 8px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .legend-item {
+      display: inline-flex;
+      gap: 4px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 3px 8px;
+      background: #f8fbff;
+    }
+
+    .legend-mark {
+      width: 20px;
+      height: 6px;
+      border-radius: 99px;
+      border: 1px solid #cbd5e1;
+      background: #e2e8f0;
+    }
+    .legend-mark.both {
+      background: linear-gradient(to bottom, #d92d20 0 50%, #d92d20 50% 100%);
+    }
+    .legend-mark.up {
+      background: linear-gradient(to bottom, #d92d20 0 50%, #cbd5e1 50% 100%);
+    }
+    .legend-mark.down {
+      background: linear-gradient(to bottom, #cbd5e1 0 50%, #d92d20 50% 100%);
+    }
+
+    .stations {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 10px;
+      align-items: center;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 10px 8px;
+      border: 1px solid #dbe3ef;
+      border-radius: 10px;
+      background: #f8fbff;
+      scrollbar-width: thin;
+      scrollbar-color: #94a3b8 #e5e7eb;
+      contain: content;
+    }
+
+    .stations::-webkit-scrollbar {
+      height: 8px;
+    }
+    .stations::-webkit-scrollbar-track {
+      background: #e5e7eb;
+      border-radius: 99px;
+    }
+    .stations::-webkit-scrollbar-thumb {
+      background: #94a3b8;
+      border-radius: 99px;
+    }
+
+    .station {
+      flex: 0 0 auto;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 4px;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 6px 10px;
+      background: #ffffff;
+      white-space: nowrap;
+      min-width: 84px;
+    }
+
+    .station-name {
+      display: block;
+      width: 100%;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .station-xfers {
+      display: inline-flex;
+      gap: 4px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: nowrap;
+      min-height: 16px;
+    }
+
+    .xfer-badge {
+      display: inline-block;
+      font-size: 10px;
+      line-height: 1;
+      padding: 3px 6px;
+      border-radius: 999px;
+      border: 1px solid #bbf7d0;
+      background: #f0fdf4;
+      color: #166534;
+      font-weight: 700;
+      max-width: 140px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .xfer-more {
+      font-size: 10px;
+      color: #475569;
+      font-weight: 700;
+    }
+
+    .segment {
+      flex: 0 0 auto;
+      width: 44px;
+      display: inline-flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .seg-track {
+      position: relative;
+      overflow: hidden;
+      height: 6px;
+      border-radius: 99px;
+      background: #cbd5e1;
+      border: 1px solid #cbd5e1;
+    }
+    .seg-track.active { border-color: transparent; }
+    .seg-track.active.status-normal { background: #16a34a; }
+    .seg-track.active.status-delay { background: #ca8a04; }
+    .seg-track.active.status-suspend { background: #9f1239; }
+    .seg-track.active.status-stop { background: #b91c1c; }
+    .seg-track.active.status-unknown { background: #f59e0b; }
+    .seg-track.active::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 55%;
+      left: 0;
+      opacity: 0.95;
+      will-change: transform;
+      background: linear-gradient(
+        90deg,
+        rgba(255,255,255,0.02) 0%,
+        rgba(255,255,255,0.98) 45%,
+        rgba(255,255,255,0.02) 100%
+      );
+      transform: translateX(-130%);
+    }
+
+    .seg-track.active.flow-right::before,
+    .seg-track.active.flow-left::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      z-index: 2;
+      filter: drop-shadow(0 0 1px rgba(0,0,0,0.25));
+    }
+
+    .seg-track.active.flow-right::before {
+      right: 2px;
+      border-top: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+      border-left: 6px solid rgba(255,255,255,0.95);
+    }
+
+    .seg-track.active.flow-left::before {
+      left: 2px;
+      border-top: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+      border-right: 6px solid rgba(255,255,255,0.95);
+    }
+
+    .seg-track.flow-right::after {
+      animation: sweepLinear 1.1s linear infinite;
+    }
+
+    .seg-track.flow-left::after {
+      animation: sweepLinear 1.1s linear infinite reverse;
+    }
+
+    .seg-track.flow-pulse::after {
+      width: 65%;
+      animation: sweepPulse 1.2s ease-in-out infinite;
+    }
+
+    @keyframes sweepLinear {
+      from { transform: translateX(-130%); }
+      to { transform: translateX(210%); }
+    }
+
+    @keyframes sweepPulse {
+      0% { opacity: 0.25; transform: translateX(-20%); }
+      50% { opacity: 1; transform: translateX(25%); }
+      100% { opacity: 0.25; transform: translateX(70%); }
+    }
+
+    @media (max-width: 980px) {
+      .flow { grid-template-columns: 1fr; }
+      .wrap { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 24px; }
+      .meta-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="hero-top">
+        <span class="chip">FILE:// 実行</span>
+        <span class="chip">EDGE 対応</span>
+        <span class="chip">インストール不要</span>
+      </div>
+      <h1>自然文から運行状況を即時反映</h1>
+      <p>運行情報の文章を貼り付けるだけで、路線・区間・原因・再開見込みを自動抽出して路線カードへ反映します。手動入力は補助機能として利用できます。</p>
+      <div class="flow">
+        <div class="flow-card">
+          <strong>1. 自然文入力</strong>
+          <span>公式発表文をそのまま貼り付け</span>
+        </div>
+        <div class="flow-card">
+          <strong>2. 解析して反映</strong>
+          <span>路線・区間・状態を自動抽出</span>
+        </div>
+        <div class="flow-card">
+          <strong>3. 必要時のみ手動補正</strong>
+          <span>抜けた項目だけ最小修正</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <aside class="panel">
+      <h2>自然文入力（主機能）</h2>
+      <p class="hint">例: 五能線は、五所川原～陸奥鶴田駅間での線路に支障物の影響で、鰺ケ沢～弘前駅間の上下線で運転を見合わせています。</p>
+
+      <div class="primary-block">
+        <textarea id="rawText" placeholder="ここに自然文を貼り付け"></textarea>
+        <div class="stack">
+          <button id="parseBtn">解析して反映</button>
+          <button id="clearBtn" class="secondary">入力をクリア</button>
+        </div>
+      </div>
+
+      <div id="parseResult" class="result" style="margin-top:10px;">待機中</div>
+      <div class="legend">
+        <span class="legend-item"><span class="legend-mark both"></span>上下/両方向</span>
+        <span class="legend-item"><span class="legend-mark up"></span>上り/内回りのみ</span>
+        <span class="legend-item"><span class="legend-mark down"></span>下り/外回りのみ</span>
+        <span class="legend-item">色: 平常=緑 / 遅延=黄 / 見合わせ=濃赤 / 運休=赤</span>
+      </div>
+      <label class="hint" style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+        <input id="debugForceSegments" type="checkbox" style="width:auto;" />
+        デバッグ: 全駅間ラインを強制表示（アニメ確認）
+      </label>
+
+      <div class="sub-title">手動設定（補助）</div>
+      <div class="stack">
+        <select id="manualLine"></select>
+        <select id="manualStatus">
+          <option value="normal">平常運転</option>
+          <option value="delay">遅延</option>
+          <option value="suspend">運転見合わせ</option>
+          <option value="stop">運休</option>
+        </select>
+        <select id="manualDirection">
+          <option value="both">上下/両方向</option>
+          <option value="up">上り/内回りのみ</option>
+          <option value="down">下り/外回りのみ</option>
+          <option value="unknown">方向不明</option>
+        </select>
+        <input id="manualSection" placeholder="区間（例: 鰺ケ沢〜弘前）" />
+        <input id="manualCause" placeholder="原因（例: 線路支障物）" />
+        <input id="manualResume" placeholder="再開見込み（例: 未定）" />
+        <button id="manualApply" class="secondary">手動で反映</button>
+      </div>
+    </aside>
+
+    <main class="panel">
+      <h2>路線一覧</h2>
+      <div class="direction-filter-wrap">
+        <div id="directionFilters" class="direction-filters"></div>
+      </div>
+      <div id="cards" class="cards"></div>
+    </main>
+  </div>
+
+  <script src="data_kanto.js"></script>
+<script src="data_tohoku.js"></script>
+<script src="data_shinetsu.js"></script>
+<script src="data_limited.js"></script>
+<script src="data_shinkansen.js"></script>
+<script src="sample_notices.js"></script>
+<script src="railway_lines.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
