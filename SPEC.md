@@ -37,6 +37,18 @@ Railway_status_map/
       kanto_ito.js
       kanto_sagami.js
       kanto_tsurumi.js
+      kanto_utsunomiya.js
+      kanto_takasaki.js
+      kanto_saikyo.js
+      kanto_kawagoe.js
+      kanto_musashino.js
+      kanto_joetsu.js
+      kanto_shinetsu_main.js
+      kanto_agatsuma.js
+      kanto_karasuyama.js
+      kanto_hachiko.js
+      kanto_nikko.js
+      kanto_ryomo.js
     group_direct_service.js      # 方面/サービス単位（移行中）
     line_yamanote.js
     line_chuo_rapid.js
