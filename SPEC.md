@@ -30,12 +30,16 @@ Railway_status_map/
   station_metadata/
     lines/                       # 路線別チャンク（優先）
       kanto_tokaido.js
+      kanto_keihin_tohoku.js
       kanto_yokosuka.js
+      kanto_nambu.js
+      kanto_yokohama.js
       kanto_ito.js
+      kanto_sagami.js
+      kanto_tsurumi.js
     group_direct_service.js      # 方面/サービス単位（移行中）
     line_yamanote.js
     line_chuo_rapid.js
-    line_tokaido_kanto.js
     line_sobu_joban.js
     line_tohoku_shinetsu.js
 ```

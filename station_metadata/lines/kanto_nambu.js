@@ -1,0 +1,30 @@
+// 路線別メタデータ: 南武線（関東）
+window.stationMetadataChunks = window.stationMetadataChunks || {};
+Object.assign(window.stationMetadataChunks, {
+  "川崎": {"nameKana":"かわさき","interchanges":[{"toOperator":"京急","toLine":"本線","toStationName":"京急川崎"}]},
+  "尻手": {"nameKana":"しって"},
+  "矢向": {"nameKana":"やこう"},
+  "鹿島田": {"nameKana":"かしまだ"},
+  "平間": {"nameKana":"ひらま"},
+  "向河原": {"nameKana":"むかいがわら"},
+  "武蔵小杉": {"nameKana":"むさしこすぎ","interchanges":[{"toOperator":"東急","toLine":"東横線"},{"toOperator":"東急","toLine":"目黒線"}]},
+  "武蔵中原": {"nameKana":"むさしなかはら"},
+  "武蔵新城": {"nameKana":"むさししんじょう"},
+  "武蔵溝ノ口": {"nameKana":"むさしみぞのくち","interchanges":[{"toOperator":"東急","toLine":"田園都市線","toStationName":"溝の口"},{"toOperator":"東急","toLine":"大井町線","toStationName":"溝の口"}]},
+  "津田山": {"nameKana":"つだやま"},
+  "久地": {"nameKana":"くじ"},
+  "宿河原": {"nameKana":"しゅくがわら"},
+  "登戸": {"nameKana":"のぼりと","interchanges":[{"toOperator":"小田急","toLine":"小田原線"}]},
+  "中野島": {"nameKana":"なかのしま"},
+  "稲田堤": {"nameKana":"いなだづつみ","interchanges":[{"toOperator":"京王","toLine":"相模原線","toStationName":"京王稲田堤"}]},
+  "矢野口": {"nameKana":"やのくち"},
+  "稲城長沼": {"nameKana":"いなぎながぬま"},
+  "南多摩": {"nameKana":"みなみたま"},
+  "府中本町": {"nameKana":"ふちゅうほんまち"},
+  "分倍河原": {"nameKana":"ぶばいがわら","interchanges":[{"toOperator":"京王","toLine":"京王線"}]},
+  "西府": {"nameKana":"にしふ"},
+  "谷保": {"nameKana":"やほ"},
+  "矢川": {"nameKana":"やがわ"},
+  "西国立": {"nameKana":"にしくにたち"},
+  "立川": {"nameKana":"たちかわ","interchanges":[{"toOperator":"多摩都市モノレール","toLine":"多摩都市モノレール線"}]}
+});
