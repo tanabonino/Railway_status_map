@@ -170,6 +170,23 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
     "常磐線快速電車": "JJ",
     "常磐線各駅停車": "JL"
   };
+  const ROUTE_COLOR_BY_SYMBOL = {
+    "JY": "#9acd32",
+    "JK": "#00b2e5",
+    "JT": "#f68b1f",
+    "JO": "#1f3a93",
+    "JN": "#f4a300",
+    "JH": "#7fbf3f",
+    "JS": "#e95d0f",
+    "JU": "#f68b1f",
+    "JA": "#00ac9a",
+    "JC": "#f15a22",
+    "JB": "#ffd400",
+    "JE": "#c2185b",
+    "JM": "#e95d0f",
+    "JJ": "#00b261",
+    "JL": "#00a0e9"
+  };
 
   const STALE_MINUTES = 20;
 
@@ -458,6 +475,29 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
     return name + " （" + kana + "）";
   }
 
+  function renderLineTitleNode(target, line) {
+    if (!target) {
+      return;
+    }
+    target.innerHTML = "";
+
+    const rawName = (line && line.lineName) || "";
+    const symbol = routeSymbolByLineName(rawName);
+    if (symbol) {
+      const badge = document.createElement("span");
+      badge.className = "route-symbol-badge";
+      badge.style.backgroundColor = routeColorBySymbol(symbol);
+      badge.textContent = symbol;
+      target.appendChild(badge);
+    }
+
+    const nameMain = document.createElement("span");
+    nameMain.className = "line-name-main";
+    const kana = (line && line.lineNameKana) || "";
+    nameMain.textContent = rawName ? (rawName + (kana ? " （" + kana + "）" : "")) : "";
+    target.appendChild(nameMain);
+  }
+
   function displayName(lineId) {
     const line = railwayLinesData[lineId];
     if (!line) {
@@ -469,11 +509,19 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
 
   function lineNameWithSymbol(lineName) {
     const name = String(lineName || "");
-    const symbol = ROUTE_SYMBOL_BY_LINE_NAME[name] || "";
+    const symbol = routeSymbolByLineName(name);
     if (!symbol || !name) {
       return name;
     }
     return symbol + " " + name;
+  }
+
+  function routeSymbolByLineName(lineName) {
+    return ROUTE_SYMBOL_BY_LINE_NAME[String(lineName || "")] || "";
+  }
+
+  function routeColorBySymbol(symbol) {
+    return ROUTE_COLOR_BY_SYMBOL[String(symbol || "")] || "#4f6a59";
   }
 
   function createInitialState() {
@@ -1119,7 +1167,7 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
 
       const title = document.createElement("div");
       title.className = "line-name";
-      title.textContent = formatLineTitle(line);
+      renderLineTitleNode(title, line);
 
       const areaChip = document.createElement("span");
       areaChip.className = "station";
@@ -1320,6 +1368,14 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
     lineChip.className = "station-detail-chip";
     lineChip.textContent = lineNameWithSymbol(selectedStation.lineName || "") || "路線未設定";
     sub.appendChild(lineChip);
+    const symbol = routeSymbolByLineName(selectedStation.lineName || "");
+    if (symbol) {
+      const symbolChip = document.createElement("span");
+      symbolChip.className = "route-symbol-badge";
+      symbolChip.style.backgroundColor = routeColorBySymbol(symbol);
+      symbolChip.textContent = symbol;
+      sub.appendChild(symbolChip);
+    }
 
     if (selectedStation.lineScope) {
       const scopeChip = document.createElement("span");
