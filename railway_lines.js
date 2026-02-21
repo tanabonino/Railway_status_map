@@ -187,6 +187,9 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
     "JJ": "#00b261",
     "JL": "#00a0e9"
   };
+  const ROUTE_ICON_BY_SYMBOL = {
+    "JY": "route_icons/ico_rosen_jy.svg"
+  };
 
   const STALE_MINUTES = 20;
 
@@ -484,11 +487,7 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
     const rawName = (line && line.lineName) || "";
     const symbol = routeSymbolByLineName(rawName);
     if (symbol) {
-      const badge = document.createElement("span");
-      badge.className = "route-symbol-badge";
-      badge.style.backgroundColor = routeColorBySymbol(symbol);
-      badge.textContent = symbol;
-      target.appendChild(badge);
+      target.appendChild(createRouteSymbolNode(symbol));
     }
 
     const nameMain = document.createElement("span");
@@ -522,6 +521,27 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
 
   function routeColorBySymbol(symbol) {
     return ROUTE_COLOR_BY_SYMBOL[String(symbol || "")] || "#4f6a59";
+  }
+
+  function routeIconBySymbol(symbol) {
+    return ROUTE_ICON_BY_SYMBOL[String(symbol || "")] || "";
+  }
+
+  function createRouteSymbolNode(symbol) {
+    const iconPath = routeIconBySymbol(symbol);
+    if (iconPath) {
+      const img = document.createElement("img");
+      img.className = "route-symbol-icon";
+      img.src = iconPath;
+      img.alt = symbol;
+      img.loading = "lazy";
+      return img;
+    }
+    const badge = document.createElement("span");
+    badge.className = "route-symbol-badge";
+    badge.style.backgroundColor = routeColorBySymbol(symbol);
+    badge.textContent = symbol;
+    return badge;
   }
 
   function createInitialState() {
@@ -1370,11 +1390,7 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
     sub.appendChild(lineChip);
     const symbol = routeSymbolByLineName(selectedStation.lineName || "");
     if (symbol) {
-      const symbolChip = document.createElement("span");
-      symbolChip.className = "route-symbol-badge";
-      symbolChip.style.backgroundColor = routeColorBySymbol(symbol);
-      symbolChip.textContent = symbol;
-      sub.appendChild(symbolChip);
+      sub.appendChild(createRouteSymbolNode(symbol));
     }
 
     if (selectedStation.lineScope) {
