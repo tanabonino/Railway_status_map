@@ -599,6 +599,7 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
     const linePick = detectLineAndArea(text, sectionInfo.stationTokens);
     const directionInfo = detectDirection(text, linePick.lineName);
     const status = detectStatus(text);
+    const sectionResolved = resolveOperationalSection(text, status, sectionInfo);
     const cause = detectCause(text);
     const resume = detectResume(text, status);
 
@@ -614,8 +615,8 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
       directionUpLabel: directionInfo.upLabel,
       directionDownLabel: directionInfo.downLabel,
       directionLabel: directionInfo.display,
-      section: sectionInfo.text,
-      sectionRanges: sectionInfo.ranges,
+      section: sectionResolved.text,
+      sectionRanges: sectionResolved.ranges,
       cause: cause,
       resume: resume
     };
@@ -906,6 +907,71 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
       stationTokens: uniqTokens,
       ranges: ranges
     };
+  }
+
+  function resolveOperationalSection(text, status, sectionInfo) {
+    const base = sectionInfo || { text: "", ranges: [] };
+    const ranges = Array.isArray(base.ranges) ? base.ranges : [];
+
+    if (status !== "suspend" && status !== "stop") {
+      return {
+        text: base.text || "",
+        ranges: ranges
+      };
+    }
+
+    const linked = detectOperationLinkedRanges(text);
+    if (linked.length) {
+      return {
+        text: linked.map(function (r) {
+          return r.from + "〜" + r.to;
+        }).join(" / "),
+        ranges: linked
+      };
+    }
+
+    // 「A〜B駅間での〜の影響で、上下線で運転を見合わせ」のような文は
+    // 原因発生箇所が抽出されるため、全線見合わせとして区間を空にする。
+    if (isLikelyWholeLineSuspension(text)) {
+      return { text: "", ranges: [] };
+    }
+
+    return {
+      text: base.text || "",
+      ranges: ranges
+    };
+  }
+
+  function detectOperationLinkedRanges(text) {
+    const out = [];
+    const seen = {};
+    const patterns = [
+      /([\u4E00-\u9FFF\u3040-\u30FFA-Za-z0-9々ヶ・]+)\s*[〜～\-－]\s*([\u4E00-\u9FFF\u3040-\u30FFA-Za-z0-9々ヶ・]+)駅?間の[^。\n]*(運転を?見合わせ|運休|運転を取りやめ|運転を中止)/g,
+      /([\u4E00-\u9FFF\u3040-\u30FFA-Za-z0-9々ヶ・]+)\s*[〜～\-－]\s*([\u4E00-\u9FFF\u3040-\u30FFA-Za-z0-9々ヶ・]+)駅?間で(?!の)[^。\n]*(運転を?見合わせ|運休|運転を取りやめ|運転を中止)/g
+    ];
+
+    patterns.forEach(function (p) {
+      let m;
+      while ((m = p.exec(text)) !== null) {
+        const from = normalizeStationToken(cleanText(m[1]));
+        const to = normalizeStationToken(cleanText(m[2]));
+        const key = from + "|" + to;
+        if (!from || !to || from === to || seen[key]) {
+          continue;
+        }
+        seen[key] = true;
+        out.push({ from: from, to: to });
+      }
+    });
+
+    return out;
+  }
+
+  function isLikelyWholeLineSuspension(text) {
+    if (/一部/.test(text)) {
+      return false;
+    }
+    return /(上下線|全線|全区間)[^。\n]{0,24}(運転を?見合わせ|運休|運転を取りやめ|運転を中止)/.test(text);
   }
 
   function detectCause(text) {
