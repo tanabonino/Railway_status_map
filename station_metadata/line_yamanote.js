@@ -4,9 +4,7 @@ Object.assign(window.stationMetadataChunks, {
   "東京": {
     nameKana: "とうきょう",
     interchanges: [
-      { toOperator: "東京メトロ", toLine: "丸ノ内線" },
-      { toOperator: "東京メトロ", toLine: "東西線" },
-      { toOperator: "東京メトロ", toLine: "千代田線" }
+      { toOperator: "東京メトロ", toLine: "丸ノ内線" }
     ]
   },
   "有楽町": {
@@ -38,10 +36,40 @@ Object.assign(window.stationMetadataChunks, {
       { toOperator: "都営", toLine: "三田線", toStationName: "三田" }
     ]
   },
+  "高輪ゲートウェイ": {
+    nameKana: "たかなわげーとうぇい"
+  },
   "品川": {
     nameKana: "しながわ",
     interchanges: [
       { toOperator: "京急", toLine: "本線" }
+    ]
+  },
+  "大崎": {
+    nameKana: "おおさき",
+    interchanges: [
+      { toOperator: "東京臨海高速鉄道", toLine: "りんかい線" }
+    ]
+  },
+  "五反田": {
+    nameKana: "ごたんだ",
+    interchanges: [
+      { toOperator: "都営", toLine: "浅草線" },
+      { toOperator: "東急", toLine: "池上線" }
+    ]
+  },
+  "目黒": {
+    nameKana: "めぐろ",
+    interchanges: [
+      { toOperator: "東京メトロ", toLine: "南北線" },
+      { toOperator: "都営", toLine: "三田線" },
+      { toOperator: "東急", toLine: "目黒線" }
+    ]
+  },
+  "恵比寿": {
+    nameKana: "えびす",
+    interchanges: [
+      { toOperator: "東京メトロ", toLine: "日比谷線" }
     ]
   },
   "渋谷": {
@@ -55,6 +83,19 @@ Object.assign(window.stationMetadataChunks, {
       { toOperator: "京王", toLine: "井の頭線" }
     ]
   },
+  "原宿": {
+    nameKana: "はらじゅく",
+    interchanges: [
+      { toOperator: "東京メトロ", toLine: "千代田線", toStationName: "明治神宮前〈原宿〉" },
+      { toOperator: "東京メトロ", toLine: "副都心線", toStationName: "明治神宮前〈原宿〉" }
+    ]
+  },
+  "代々木": {
+    nameKana: "よよぎ",
+    interchanges: [
+      { toOperator: "都営", toLine: "大江戸線" }
+    ]
+  },
   "新宿": {
     nameKana: "しんじゅく",
     interchanges: [
@@ -65,6 +106,19 @@ Object.assign(window.stationMetadataChunks, {
       { toOperator: "京王", toLine: "京王線" }
     ]
   },
+  "新大久保": {
+    nameKana: "しんおおくぼ"
+  },
+  "高田馬場": {
+    nameKana: "たかだのばば",
+    interchanges: [
+      { toOperator: "東京メトロ", toLine: "東西線" },
+      { toOperator: "西武", toLine: "新宿線" }
+    ]
+  },
+  "目白": {
+    nameKana: "めじろ"
+  },
   "池袋": {
     nameKana: "いけぶくろ",
     interchanges: [
@@ -74,6 +128,27 @@ Object.assign(window.stationMetadataChunks, {
       { toOperator: "西武", toLine: "池袋線" },
       { toOperator: "東武", toLine: "東上線" }
     ]
+  },
+  "大塚": {
+    nameKana: "おおつか",
+    interchanges: [
+      { toOperator: "都電", toLine: "荒川線", toStationName: "大塚駅前" }
+    ]
+  },
+  "巣鴨": {
+    nameKana: "すがも",
+    interchanges: [
+      { toOperator: "都営", toLine: "三田線" }
+    ]
+  },
+  "駒込": {
+    nameKana: "こまごめ",
+    interchanges: [
+      { toOperator: "東京メトロ", toLine: "南北線" }
+    ]
+  },
+  "田端": {
+    nameKana: "たばた"
   },
   "西日暮里": {
     nameKana: "にしにっぽり",
@@ -89,11 +164,22 @@ Object.assign(window.stationMetadataChunks, {
       { toOperator: "日暮里・舎人ライナー", toLine: "日暮里・舎人ライナー" }
     ]
   },
+  "鶯谷": {
+    nameKana: "うぐいすだに"
+  },
   "上野": {
     nameKana: "うえの",
     interchanges: [
       { toOperator: "東京メトロ", toLine: "銀座線" },
       { toOperator: "東京メトロ", toLine: "日比谷線" }
+    ]
+  },
+  "御徒町": {
+    nameKana: "おかちまち",
+    interchanges: [
+      { toOperator: "都営", toLine: "大江戸線", toStationName: "上野御徒町" },
+      { toOperator: "東京メトロ", toLine: "銀座線", toStationName: "上野広小路" },
+      { toOperator: "東京メトロ", toLine: "日比谷線", toStationName: "仲御徒町" }
     ]
   },
   "秋葉原": {
