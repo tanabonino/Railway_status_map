@@ -1,5 +1,40 @@
 // アプリ本体（file:// で動作。fetch不要）
 // 路線データは data_*.js から読み込む。
+function normalizeStationMetaKey(name) {
+  return String(name || "")
+    .replace(/\s+/g, "")
+    .replace(/駅$/g, "");
+}
+
+function getStationMetadataByName(name) {
+  const root = window.stationMetadata || {};
+  const key = normalizeStationMetaKey(name);
+  return root[key] || root[String(name || "")] || null;
+}
+
+function mergeInterchanges(primaryList, fallbackList) {
+  const out = [];
+  const seen = {};
+
+  function pushAll(list) {
+    (Array.isArray(list) ? list : []).forEach(function (it) {
+      const op = String((it && it.toOperator) || "");
+      const line = String((it && it.toLine) || "");
+      const st = String((it && it.toStationName) || "");
+      const key = [op, line, st].join("|");
+      if (!key || seen[key]) {
+        return;
+      }
+      seen[key] = true;
+      out.push({ toOperator: op, toLine: line, toStationName: st });
+    });
+  }
+
+  pushAll(primaryList);
+  pushAll(fallbackList);
+  return out;
+}
+
 function normalizeLegacyLine(line) {
   const stations = Array.isArray(line && line.stations) ? line.stations : [];
   return {
@@ -8,11 +43,14 @@ function normalizeLegacyLine(line) {
     lineNameKana: (line && line.lineNameKana) || "",
     scope: (line && line.scope) || "",
     stations: stations.map(function (st) {
+      const stationName = st && st.name ? String(st.name) : "駅名未設定";
+      const meta = getStationMetadataByName(stationName) || {};
+      const inlineInterchanges = Array.isArray(st && st.interchanges) ? st.interchanges : [];
       return {
         id: st && st.id ? String(st.id) : "",
-        name: st && st.name ? String(st.name) : "駅名未設定",
-        nameKana: st && (st.nameKana || st.kana) ? String(st.nameKana || st.kana) : "",
-        interchanges: Array.isArray(st && st.interchanges) ? st.interchanges : []
+        name: stationName,
+        nameKana: st && (st.nameKana || st.kana) ? String(st.nameKana || st.kana) : String(meta.nameKana || ""),
+        interchanges: mergeInterchanges(inlineInterchanges, meta.interchanges)
       };
     })
   };
@@ -36,20 +74,31 @@ function buildLineDataMap(railDataRoot, fallbackChunks) {
     if (Array.isArray(line.stationIds) && line.stationIds.length) {
       mappedStations = line.stationIds.map(function (stationId) {
         const s = stations[stationId] || {};
+        const stationName = s.name || stationId;
+        const meta = getStationMetadataByName(stationName) || {};
         return {
           id: stationId,
-          name: s.name || stationId,
-          interchanges: Array.isArray(interchanges[stationId]) ? interchanges[stationId] : []
+          name: stationName,
+          nameKana: String(s.nameKana || s.kana || meta.nameKana || ""),
+          interchanges: mergeInterchanges(
+            Array.isArray(interchanges[stationId]) ? interchanges[stationId] : [],
+            meta.interchanges
+          )
         };
       });
     } else if (Array.isArray(line.stations)) {
       mappedStations = line.stations.map(function (st) {
         const sid = st && st.id ? String(st.id) : "";
+        const stationName = st && st.name ? String(st.name) : "駅名未設定";
+        const meta = getStationMetadataByName(stationName) || {};
+        const inlineInterchanges = sid && Array.isArray(interchanges[sid])
+          ? interchanges[sid]
+          : (Array.isArray(st && st.interchanges) ? st.interchanges : []);
         return {
           id: sid,
-          name: st && st.name ? String(st.name) : "駅名未設定",
-          nameKana: st && (st.nameKana || st.kana) ? String(st.nameKana || st.kana) : "",
-          interchanges: sid && Array.isArray(interchanges[sid]) ? interchanges[sid] : (Array.isArray(st && st.interchanges) ? st.interchanges : [])
+          name: stationName,
+          nameKana: st && (st.nameKana || st.kana) ? String(st.nameKana || st.kana) : String(meta.nameKana || ""),
+          interchanges: mergeInterchanges(inlineInterchanges, meta.interchanges)
         };
       });
     }
