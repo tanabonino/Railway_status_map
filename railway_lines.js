@@ -194,6 +194,7 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
   const lineNameIndex = buildLineNameIndex();
   const state = createInitialState();
   let selectedDirectionFilter = loadDirectionFilter();
+  let selectedStation = loadSelectedStation();
 
   const ui = {
     rawText: document.getElementById("rawText"),
@@ -209,7 +210,8 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
     manualCause: document.getElementById("manualCause"),
     manualResume: document.getElementById("manualResume"),
     manualApply: document.getElementById("manualApply"),
-    debugForceSegments: document.getElementById("debugForceSegments")
+    debugForceSegments: document.getElementById("debugForceSegments"),
+    stationDetail: document.getElementById("stationDetail")
   };
 
   init();
@@ -276,6 +278,72 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
     try {
       localStorage.setItem("directionFilter", v);
     } catch (_) {}
+  }
+
+  function loadSelectedStation() {
+    try {
+      const raw = localStorage.getItem("selectedStationV1");
+      if (!raw) {
+        return null;
+      }
+      const parsed = JSON.parse(raw);
+      if (!parsed || !parsed.key || !parsed.stationName) {
+        return null;
+      }
+      return parsed;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function saveSelectedStation() {
+    try {
+      if (!selectedStation) {
+        localStorage.removeItem("selectedStationV1");
+        return;
+      }
+      localStorage.setItem("selectedStationV1", JSON.stringify(selectedStation));
+    } catch (_) {}
+  }
+
+  function makeStationKey(lineId, stationName) {
+    return String(lineId || "") + "::" + normalizeStationToken(stationName);
+  }
+
+  function setSelectedStation(lineId, line, station) {
+    const lineSafe = line || {};
+    const stationSafe = station || {};
+    selectedStation = {
+      key: makeStationKey(lineId, stationSafe.name),
+      lineId: lineId,
+      lineName: lineSafe.lineName || "",
+      lineScope: lineSafe.scope || "",
+      lineArea: lineSafe.area || "",
+      stationName: stationSafe.name || "",
+      stationKana: detectStationKana(stationSafe),
+      interchanges: cleanInterchanges(stationSafe.interchanges || [])
+    };
+    saveSelectedStation();
+    render();
+  }
+
+  function cleanInterchanges(list) {
+    const out = [];
+    const seen = {};
+    (Array.isArray(list) ? list : []).forEach(function (it) {
+      const item = {
+        toOperator: cleanText((it && it.toOperator) || ""),
+        toLine: cleanText((it && it.toLine) || ""),
+        toStationName: cleanText((it && it.toStationName) || "")
+      };
+      const key = [item.toOperator, item.toLine, item.toStationName].join("|");
+      if (!key || seen[key]) {
+        return;
+      }
+      seen[key] = true;
+      out.push(item);
+    });
+    return out;
   }
 
   function setupDirectionFilters() {
@@ -1036,33 +1104,20 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
           station.appendChild(stationName);
 
           const interchangeLabels = collectInterchangeLabels(st);
+          const stationKey = makeStationKey(lineId, st.name);
           const stationKana = detectStationKana(st);
-          const titleParts = [];
-          if (stationKana) {
-            titleParts.push("カナ: " + stationKana);
-          }
           if (interchangeLabels.length) {
-            const xferWrap = document.createElement("span");
-            xferWrap.className = "station-xfers";
-            const displayCount = Math.min(2, interchangeLabels.length);
-            for (let i = 0; i < displayCount; i += 1) {
-              const badge = document.createElement("span");
-              badge.className = "xfer-badge";
-              badge.textContent = interchangeLabels[i];
-              xferWrap.appendChild(badge);
-            }
-            if (interchangeLabels.length > displayCount) {
-              const more = document.createElement("span");
-              more.className = "xfer-more";
-              more.textContent = "+" + (interchangeLabels.length - displayCount);
-              xferWrap.appendChild(more);
-            }
-            station.appendChild(xferWrap);
-            titleParts.push("乗換: " + interchangeLabels.join(" / "));
+            station.classList.add("station-with-xfer");
           }
-          if (titleParts.length) {
-            station.title = titleParts.join("\n");
+          if (selectedStation && selectedStation.key === stationKey) {
+            station.classList.add("station-selected");
           }
+          if (stationKana) {
+            station.title = stationKana;
+          }
+          station.addEventListener("click", function () {
+            setSelectedStation(lineId, line, st);
+          });
 
           stations.appendChild(station);
           if (idx < line.stations.length - 1) {
@@ -1096,6 +1151,105 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
       card.appendChild(stations);
       ui.cards.appendChild(card);
     });
+
+    renderSelectedStationPanel();
+  }
+
+  function renderSelectedStationPanel() {
+    if (!ui.stationDetail) {
+      return;
+    }
+    ui.stationDetail.innerHTML = "";
+
+    if (!selectedStation || !selectedStation.stationName) {
+      const empty = document.createElement("p");
+      empty.className = "station-detail-empty";
+      empty.textContent = "駅を選択してください。";
+      ui.stationDetail.appendChild(empty);
+      return;
+    }
+
+    const head = document.createElement("div");
+    head.className = "station-detail-head";
+
+    const h3 = document.createElement("h3");
+    h3.className = "station-detail-title";
+    h3.textContent = selectedStation.stationName;
+    head.appendChild(h3);
+
+    const sub = document.createElement("div");
+    sub.className = "station-detail-sub";
+
+    const areaChip = document.createElement("span");
+    areaChip.className = "station-detail-chip";
+    areaChip.textContent = selectedStation.lineArea || "未分類";
+    sub.appendChild(areaChip);
+
+    const lineChip = document.createElement("span");
+    lineChip.className = "station-detail-chip";
+    lineChip.textContent = selectedStation.lineName || "路線未設定";
+    sub.appendChild(lineChip);
+
+    if (selectedStation.lineScope) {
+      const scopeChip = document.createElement("span");
+      scopeChip.className = "station-detail-chip";
+      scopeChip.textContent = selectedStation.lineScope;
+      sub.appendChild(scopeChip);
+    }
+    head.appendChild(sub);
+    ui.stationDetail.appendChild(head);
+
+    const kanaBlock = document.createElement("div");
+    kanaBlock.className = "station-detail-block";
+    const kanaLabel = document.createElement("p");
+    kanaLabel.className = "station-detail-label";
+    kanaLabel.textContent = "駅名かな";
+    const kanaValue = document.createElement("p");
+    kanaValue.className = "station-detail-value";
+    kanaValue.textContent = selectedStation.stationKana || "未登録";
+    kanaBlock.appendChild(kanaLabel);
+    kanaBlock.appendChild(kanaValue);
+    ui.stationDetail.appendChild(kanaBlock);
+
+    const xferBlock = document.createElement("div");
+    xferBlock.className = "station-detail-block";
+    const xferLabel = document.createElement("p");
+    xferLabel.className = "station-detail-label";
+    xferLabel.textContent = "乗換路線";
+    xferBlock.appendChild(xferLabel);
+
+    const list = cleanInterchanges(selectedStation.interchanges || []);
+    if (!list.length) {
+      const noXfer = document.createElement("p");
+      noXfer.className = "station-detail-value";
+      noXfer.textContent = "登録なし";
+      xferBlock.appendChild(noXfer);
+    } else {
+      const ul = document.createElement("ul");
+      ul.className = "station-xfer-list";
+      list.forEach(function (it) {
+        const li = document.createElement("li");
+        li.className = "station-xfer-item";
+        const parts = [];
+        if (it.toOperator) {
+          parts.push(it.toOperator);
+        }
+        if (it.toLine) {
+          parts.push(it.toLine);
+        }
+        let text = parts.join(" ");
+        if (!text) {
+          text = "路線名未設定";
+        }
+        if (it.toStationName) {
+          text += "（" + it.toStationName + "）";
+        }
+        li.textContent = text;
+        ul.appendChild(li);
+      });
+      xferBlock.appendChild(ul);
+    }
+    ui.stationDetail.appendChild(xferBlock);
   }
 
 

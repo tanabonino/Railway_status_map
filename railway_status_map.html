@@ -115,7 +115,8 @@
       padding: 16px;
       display: grid;
       gap: 16px;
-      grid-template-columns: 460px minmax(0, 1fr);
+      grid-template-columns: 420px minmax(0, 1fr) 320px;
+      grid-template-areas: "left main station";
     }
 
     .panel {
@@ -230,6 +231,16 @@
     }
 
     .cards { display: grid; gap: 12px; min-width: 0; }
+    .left-panel { grid-area: left; }
+    .main-panel { grid-area: main; }
+    .station-panel {
+      grid-area: station;
+      align-self: start;
+      position: sticky;
+      top: 12px;
+      max-height: calc(100vh - 24px);
+      overflow-y: auto;
+    }
 
     .card {
       border: 1px solid var(--line);
@@ -444,6 +455,34 @@
       white-space: nowrap;
       min-width: 84px;
     }
+    .stations .station {
+      position: relative;
+      cursor: pointer;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+    }
+    .stations .station:hover {
+      transform: translateY(-1px);
+      border-color: #9cc8ac;
+      box-shadow: 0 0 0 2px rgba(118, 174, 136, 0.18);
+    }
+    .stations .station.station-with-xfer {
+      border-color: #1f8a53;
+      box-shadow: inset 0 0 0 1px rgba(31, 138, 83, 0.16);
+    }
+    .stations .station.station-with-xfer::after {
+      content: "";
+      position: absolute;
+      top: 5px;
+      right: 6px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #1f8a53;
+    }
+    .stations .station.station-selected {
+      border-color: #0a6e3a;
+      box-shadow: 0 0 0 2px rgba(10, 110, 58, 0.25);
+    }
 
     .station-name {
       display: block;
@@ -481,6 +520,76 @@
       font-size: 10px;
       color: #475569;
       font-weight: 700;
+    }
+    .station-detail-empty {
+      margin: 0;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    .station-detail-head {
+      padding: 10px;
+      border: 1px solid #d6e4da;
+      border-radius: 10px;
+      background: #f5fbf7;
+    }
+    .station-detail-title {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.2;
+    }
+    .station-detail-sub {
+      margin-top: 6px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .station-detail-chip {
+      border: 1px solid #bfd7c8;
+      border-radius: 999px;
+      background: #ffffff;
+      padding: 3px 9px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #1f4f34;
+    }
+    .station-detail-block {
+      margin-top: 10px;
+      border: 1px solid #d6e4da;
+      border-radius: 10px;
+      padding: 10px;
+      background: #ffffff;
+    }
+    .station-detail-label {
+      margin: 0 0 6px;
+      font-size: 11px;
+      color: #5f7467;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .station-detail-value {
+      margin: 0;
+      font-size: 13px;
+      color: #2f4838;
+      line-height: 1.6;
+    }
+    .station-xfer-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 6px;
+    }
+    .station-xfer-item {
+      margin: 0;
+      padding: 8px;
+      border: 1px solid #d6e4da;
+      border-radius: 8px;
+      background: #f8fcf9;
+      font-size: 12px;
+      color: #2f4838;
+      line-height: 1.5;
     }
 
     .segment {
@@ -573,9 +682,28 @@
       100% { opacity: 0.25; transform: translateX(70%); }
     }
 
+    @media (max-width: 1320px) {
+      .wrap {
+        grid-template-columns: 420px minmax(0, 1fr);
+        grid-template-areas:
+          "left main"
+          "station station";
+      }
+      .station-panel {
+        position: static;
+        max-height: none;
+      }
+    }
+
     @media (max-width: 980px) {
       .flow { grid-template-columns: 1fr; }
-      .wrap { grid-template-columns: 1fr; }
+      .wrap {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "left"
+          "main"
+          "station";
+      }
       .hero h1 { font-size: 24px; }
       .meta-grid { grid-template-columns: 1fr; }
     }
@@ -609,7 +737,7 @@
   </header>
 
   <div class="wrap">
-    <aside class="panel">
+    <aside class="panel left-panel">
       <h2>自然文入力（主機能）</h2>
       <p class="hint">例: 五能線は、五所川原～陸奥鶴田駅間での線路に支障物の影響で、鰺ケ沢～弘前駅間の上下線で運転を見合わせています。</p>
 
@@ -655,13 +783,21 @@
       </div>
     </aside>
 
-    <main class="panel">
+    <main class="panel main-panel">
       <h2>路線一覧</h2>
       <div class="direction-filter-wrap">
         <div id="directionFilters" class="direction-filters"></div>
       </div>
       <div id="cards" class="cards"></div>
     </main>
+
+    <aside class="panel station-panel">
+      <h2>駅データ</h2>
+      <p class="hint">路線図の駅をクリックすると詳細を表示します。乗換駅は枠色と右上ドットで示します。</p>
+      <div id="stationDetail" style="margin-top:10px;">
+        <p class="station-detail-empty">駅を選択してください。</p>
+      </div>
+    </aside>
   </div>
 
   <script src="data_kanto.js"></script>
