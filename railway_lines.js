@@ -157,8 +157,11 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
     "横須賀線": "JO",
     "南武線": "JN",
     "横浜線": "JH",
+    "相模線": "JI",
     "湘南新宿ライン": "JS",
     "上野東京ライン": "JU",
+    "宇都宮線": "JU",
+    "高崎線": "JU",
     "埼京線": "JA",
     "川越線": "JA",
     "中央線快速電車": "JC",
@@ -168,7 +171,8 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
     "武蔵野線": "JM",
     "常磐線": "JJ",
     "常磐線快速電車": "JJ",
-    "常磐線各駅停車": "JL"
+    "常磐線各駅停車": "JL",
+    "東京モノレール線": "MO"
   };
   const ROUTE_COLOR_BY_SYMBOL = {
     "JY": "#9acd32",
@@ -188,7 +192,23 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
     "JL": "#00a0e9"
   };
   const ROUTE_ICON_BY_SYMBOL = {
-    "JY": "route_icons/ico_rosen_jy.svg"
+    "JY": "route_icons/ico_rosen_jy.svg",
+    "MO": "route_icons/ico_rosen_mo.svg",
+    "JE": "route_icons/ico_rosen_je.svg",
+    "JL": "route_icons/ico_rosen_jl.svg",
+    "JJ": "route_icons/ico_rosen_jj.svg",
+    "JB": "route_icons/ico_rosen_jb.svg",
+    "JC": "route_icons/ico_rosen_jc.svg",
+    "JM": "route_icons/ico_rosen_jm.svg",
+    "JA": "route_icons/ico_rosen_ja.svg",
+    "JU": "route_icons/ico_rosen_ju.svg",
+    "JI": "route_icons/ico_rosen_ji.svg",
+    "JN": "route_icons/ico_rosen_jn.svg",
+    "JK": "route_icons/ico_rosen_jk.svg",
+    "JH": "route_icons/ico_rosen_jh.svg",
+    "JO": "route_icons/ico_rosen_jo.svg",
+    "JT": "route_icons/ico_rosen_jt.svg",
+    "JS": "route_icons/ico_rosen_js.svg"
   };
 
   const STALE_MINUTES = 20;
