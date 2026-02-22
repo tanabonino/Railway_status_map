@@ -1,0 +1,9 @@
+BUNDLE REPORT
+Root: c:\Scripts\Railway_status_map
+Bundle: c:\Scripts\Railway_status_map\out\bundle.txt
+GeneratedAt: 2026-02-22T16:48:41
+IncludedFiles: 127
+IncludedChars: 222500
+SkippedFiles: 0
+
+SKIPPED LIST

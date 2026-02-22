@@ -55,3 +55,15 @@
 ## Notes for Migration
 - Copy this whole folder as-is to home PC.
 - Open in Edge and continue editing these same two files.
+
+## Bundle Export / Restore
+- Create one-file bundle:
+  - `powershell -ExecutionPolicy Bypass -File tools\make_bundle.ps1`
+- Output:
+  - `out\bundle.txt`
+  - `out\bundle_report.txt`
+- Excel restore macro:
+  - `excel_macro\RestoreFromBundle.bas`
+- Operation guides:
+  - `docs\MAKE_BUNDLE_GUIDE.md`
+  - `docs\RESTORE_GUIDE.md`
