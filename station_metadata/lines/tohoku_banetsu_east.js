@@ -2,7 +2,7 @@
 window.stationMetadataChunks = window.stationMetadataChunks || {};
 Object.assign(window.stationMetadataChunks, {
   "いわき": {"nameKana":"いわき"},
-  "小野新町": {},
-  "船引": {},
-  "郡山": {},
+  "小野新町": {"nameKana":"おのにいまち"},
+  "船引": {"nameKana":"ふねひき"},
+  "郡山": {"nameKana":"こおりやま"},
 });

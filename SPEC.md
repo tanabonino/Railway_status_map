@@ -100,6 +100,21 @@ Railway_status_map/
       tohoku_tadami.js
       tohoku_suigun.js
       tohoku_joban.js
+      shinetsu_uetsu.js
+      shinetsu_shinetsu_main.js
+      shinetsu_joetsu.js
+      shinetsu_shinonoi.js
+      shinetsu_koshinetsu_chuo_main.js
+      shinetsu_hakushin.js
+      shinetsu_banetsu_west.js
+      shinetsu_iiyama.js
+      shinetsu_echigo.js
+      shinetsu_oito.js
+      shinetsu_koumi.js
+      shinetsu_tadami.js
+      shinetsu_yahiko.js
+      shinetsu_yonesaka.js
+      shinetsu_gono.js
     group_direct_service.js      # 方面/サービス単位（移行中）
     line_yamanote.js
     line_chuo_rapid.js
@@ -178,4 +193,5 @@ Railway_status_map/
 
 ## 12. 既知の注意点
 - `README.md` は現状との差分が残っている箇所があるため、運用時は本 `SPEC.md` を正とする。
+
 
