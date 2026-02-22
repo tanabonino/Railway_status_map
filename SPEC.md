@@ -69,6 +69,7 @@ Railway_status_map/
       kanto_sotobo.js
       kanto_togane.js
       kanto_narita.js
+      kanto_monorail.js
     group_direct_service.js      # 方面/サービス単位（移行中）
     line_yamanote.js
     line_chuo_rapid.js
