@@ -70,6 +70,36 @@ Railway_status_map/
       kanto_togane.js
       kanto_narita.js
       kanto_monorail.js
+      tohoku_tohoku_main.js
+      tohoku_hachinohe.js
+      tohoku_ou_main_aomori_akita.js
+      tohoku_tsugaru.js
+      tohoku_hanawa.js
+      tohoku_omminato.js
+      tohoku_kitakami.js
+      tohoku_kamaishi.js
+      tohoku_tazawako.js
+      tohoku_senzan.js
+      tohoku_senseki.js
+      tohoku_senseki_tohoku.js
+      tohoku_ishinomaki.js
+      tohoku_kesennuma.js
+      tohoku_kesennuma_brt.js
+      tohoku_ofunato.js
+      tohoku_ofunato_brt.js
+      tohoku_yamada.js
+      tohoku_gono.js
+      tohoku_oga.js
+      tohoku_uetsu_northern.js
+      tohoku_rikuu_east.js
+      tohoku_rikuu_west.js
+      tohoku_yonesaka.js
+      tohoku_banetsu_west.js
+      tohoku_banetsu_east.js
+      tohoku_aterazawa.js
+      tohoku_tadami.js
+      tohoku_suigun.js
+      tohoku_joban.js
     group_direct_service.js      # 方面/サービス単位（移行中）
     line_yamanote.js
     line_chuo_rapid.js
@@ -136,7 +166,7 @@ Railway_status_map/
 
 ## 10. 今後の拡充方針
 - 駅メタデータはユーザー要求の単位（方面/路線）で分割を整理する。
-- 優先方面: 山手線 / 直通サービス / 東海道方面
+- 優先方面: 山手線 / 直通サービス / 東海道方面 / 関東東北・高崎方面 / 中央方面 / 総武方面 / 東北方面
 - 追加時は「駅名かな」と「主要乗換」をセットで登録する。
 
 ## 11. 路線記号アイコン運用
@@ -148,3 +178,4 @@ Railway_status_map/
 
 ## 12. 既知の注意点
 - `README.md` は現状との差分が残っている箇所があるため、運用時は本 `SPEC.md` を正とする。
+
