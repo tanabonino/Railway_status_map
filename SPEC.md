@@ -39,6 +39,12 @@ Railway_status_map/
       kanto_tsurumi.js
       kanto_utsunomiya.js
       kanto_takasaki.js
+      kanto_chuo_rapid.js
+      kanto_chuo_sobu_local.js
+      kanto_chuo_main.js
+      kanto_itsukaichi.js
+      kanto_ome.js
+      kanto_koumi.js
       kanto_saikyo.js
       kanto_kawagoe.js
       kanto_musashino.js
