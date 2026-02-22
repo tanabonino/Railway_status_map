@@ -55,6 +55,11 @@ Railway_status_map/
       kanto_hachiko.js
       kanto_nikko.js
       kanto_ryomo.js
+      kanto_joban.js
+      kanto_joban_rapid.js
+      kanto_joban_local.js
+      kanto_suigun.js
+      kanto_mito.js
     group_direct_service.js      # 方面/サービス単位（移行中）
     line_yamanote.js
     line_chuo_rapid.js
