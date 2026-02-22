@@ -60,6 +60,15 @@ Railway_status_map/
       kanto_joban_local.js
       kanto_suigun.js
       kanto_mito.js
+      kanto_sobu_rapid.js
+      kanto_sobu_main.js
+      kanto_keiyo.js
+      kanto_uchibo.js
+      kanto_kashima.js
+      kanto_kururi.js
+      kanto_sotobo.js
+      kanto_togane.js
+      kanto_narita.js
     group_direct_service.js      # 方面/サービス単位（移行中）
     line_yamanote.js
     line_chuo_rapid.js
