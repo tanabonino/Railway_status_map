@@ -1,12 +1,30 @@
 // 路線別メタデータ: 武蔵野線（関東）
 window.stationMetadataChunks = window.stationMetadataChunks || {};
 Object.assign(window.stationMetadataChunks, {
-  "府中本町": { nameKana: "ふちゅうほんまち" },
-  "西国分寺": { nameKana: "にしこくぶんじ" },
-  "新秋津": { nameKana: "しんあきつ", interchanges: [{ toOperator: "西武", toLine: "池袋線", toStationName: "秋津" }] },
-  "南浦和": { nameKana: "みなみうらわ" },
-  "南越谷": { nameKana: "みなみこしがや", interchanges: [{ toOperator: "東武", toLine: "伊勢崎線", toStationName: "新越谷" }] },
+  "府中本町": { nameKana: "ふちゅうほんまち", interchanges: [{ toOperator: "JR東日本", toLine: "南武線" }] },
+  "北府中": { nameKana: "きたふちゅう" },
+  "西国分寺": { nameKana: "にしこくぶんじ", interchanges: [{ toOperator: "JR東日本", toLine: "中央線" }] },
+  "新小平": { nameKana: "しんこだいら" },
+  "新秋津": { nameKana: "しんあきつ", interchanges: [{ toOperator: "西武鉄道", toLine: "池袋線", toStationName: "秋津駅" }] },
+  "東所沢": { nameKana: "ひがしところざわ" },
+  "新座": { nameKana: "にいざ" },
+  "北朝霞": { nameKana: "きたあさか", interchanges: [{ toOperator: "東武鉄道", toLine: "東上線", toStationName: "朝霞台駅" }] },
+  "西浦和": { nameKana: "にしうらわ" },
+  "武蔵浦和": { nameKana: "むさしうらわ", interchanges: [{ toOperator: "JR東日本", toLine: "埼京線" }] },
+  "南浦和": { nameKana: "みなみうらわ", interchanges: [{ toOperator: "JR東日本", toLine: "京浜東北線" }] },
+  "東浦和": { nameKana: "ひがしうらわ" },
+  "東川口": { nameKana: "ひがしかわぐち", interchanges: [{ toOperator: "埼玉高速鉄道", toLine: "埼玉高速鉄道線", toStationName: "埼玉スタジアム線" }] },
+  "南越谷": { nameKana: "みなみこしがや", interchanges: [{ toOperator: "東武鉄道", toLine: "伊勢崎線", toStationName: "東武スカイツリーライン／新越谷駅" }] },
+  "越谷レイクタウン": { nameKana: "こしがやれいくたうん" },
+  "吉川": { nameKana: "よしかわ" },
+  "吉川美南": { nameKana: "よしかわみなみ" },
+  "新三郷": { nameKana: "しんみさと" },
+  "三郷": { nameKana: "みさと" },
   "南流山": { nameKana: "みなみながれやま", interchanges: [{ toOperator: "首都圏新都市鉄道", toLine: "つくばエクスプレス" }] },
-  "新松戸": { nameKana: "しんまつど", interchanges: [{ toOperator: "流鉄", toLine: "流山線" }] },
-  "西船橋": { nameKana: "にしふなばし", interchanges: [{ toOperator: "東京メトロ", toLine: "東西線" }, { toOperator: "東葉高速鉄道", toLine: "東葉高速線" }] }
+  "新松戸": { nameKana: "しんまつど", interchanges: [{ toOperator: "JR東日本", toLine: "常磐線（各駅停車）" }, { toOperator: "流鉄", toLine: "流山線", toStationName: "幸谷駅" }] },
+  "新八柱": { nameKana: "しんやはしら", interchanges: [{ toOperator: "京成電鉄", toLine: "松戸線", toStationName: "八柱駅" }] },
+  "東松戸": { nameKana: "ひがしまつど", interchanges: [{ toOperator: "北総鉄道", toLine: "北総線" }, { toOperator: "京成電鉄", toLine: "成田空港線", toStationName: "成田スカイアクセス線" }] },
+  "市川大野": { nameKana: "いちかわおおの" },
+  "船橋法典": { nameKana: "ふなばしほうてん" },
+  "西船橋": { nameKana: "にしふなばし", interchanges: [{ toOperator: "JR東日本", toLine: "京葉線" }, { toOperator: "JR東日本", toLine: "総武線（各駅停車）" }, { toOperator: "東京メトロ", toLine: "東西線" }, { toOperator: "東葉高速鉄道", toLine: "東葉高速線" }] }
 });

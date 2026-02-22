@@ -1,11 +1,23 @@
 // 路線別メタデータ: 京葉線（関東）
 window.stationMetadataChunks = window.stationMetadataChunks || {};
 Object.assign(window.stationMetadataChunks, {
-  "東京": { nameKana: "とうきょう", interchanges: [{ toOperator: "東京メトロ", toLine: "丸ノ内線" }] },
+  "東京": { nameKana: "とうきょう", interchanges: [{ toOperator: "JR東日本", toLine: "山手線" }, { toOperator: "JR東日本", toLine: "中央線" }, { toOperator: "JR東日本", toLine: "東海道線" }, { toOperator: "JR東日本", toLine: "ほか多数" }, { toOperator: "東京メトロ", toLine: "丸ノ内線" }] },
   "八丁堀": { nameKana: "はっちょうぼり", interchanges: [{ toOperator: "東京メトロ", toLine: "日比谷線" }] },
+  "越中島": { nameKana: "えっちゅうじま" },
+  "潮見": { nameKana: "しおみ" },
   "新木場": { nameKana: "しんきば", interchanges: [{ toOperator: "東京メトロ", toLine: "有楽町線" }, { toOperator: "東京臨海高速鉄道", toLine: "りんかい線" }] },
-  "舞浜": { nameKana: "まいはま" },
+  "葛西臨海公園": { nameKana: "かさいりんかいこうえん" },
+  "舞浜": { nameKana: "まいはま", interchanges: [{ toOperator: "東京ディズニーリゾート", toLine: "最寄" }] },
   "新浦安": { nameKana: "しんうらやす" },
+  "市川塩浜": { nameKana: "いちかわしおはま" },
+  "西船橋": { nameKana: "にしふなばし", interchanges: [{ toOperator: "JR東日本", toLine: "武蔵野線" }, { toOperator: "JR東日本", toLine: "総武線（各駅停車）" }, { toOperator: "東京メトロ", toLine: "東西線" }, { toOperator: "東葉高速鉄道", toLine: "東葉高速線" }] },
+  "二俣新町": { nameKana: "ふたまたしんまち" },
+  "南船橋": { nameKana: "みなみふなばし", interchanges: [{ toOperator: "京葉線", toLine: "支線分岐" }] },
+  "新習志野": { nameKana: "しんならしの" },
+  "幕張豊砂": { nameKana: "まくはりとよすな" },
   "海浜幕張": { nameKana: "かいひんまくはり" },
-  "蘇我": { nameKana: "そが" }
+  "検見川浜": { nameKana: "けみがわはま" },
+  "稲毛海岸": { nameKana: "いなげかいがん" },
+  "千葉みなと": { nameKana: "ちばみなと", interchanges: [{ toOperator: "千葉都市モノレール", toLine: "1号線" }] },
+  "蘇我": { nameKana: "そが", interchanges: [{ toOperator: "JR東日本", toLine: "内房線" }, { toOperator: "JR東日本", toLine: "外房線" }] }
 });

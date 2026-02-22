@@ -183,6 +183,18 @@ Railway_status_map/
 - 駅メタデータはユーザー要求の単位（方面/路線）で分割を整理する。
 - 優先方面: 山手線 / 直通サービス / 東海道方面 / 関東東北・高崎方面 / 中央方面 / 総武方面 / 東北方面
 - 追加時は「駅名かな」と「主要乗換」をセットで登録する。
+- 運用上の必須条件: **運行情報対象路線は全駅を登録する**（主要駅のみ定義は禁止）。
+
+## 10.1 全駅化チェック運用
+- 全駅マスタは `station_master/full_line_stations.json` を正として管理する（`station_master/full_line_stations.sample.json` をテンプレートに作成）。
+- 形式: キーは `area:line_key`、値は駅名配列（路線図の表示順）。
+- 判定コマンド: `node tools/check_station_completeness.js`
+- レポート出力: `reports/station_completeness.md`
+- 判定基準
+- マスタ未登録路線が 0
+- 現行未登録路線が 0
+- 駅数不一致が 0
+- 駅順不一致が 0
 
 ## 11. 路線記号アイコン運用
 - 路線記号は `railway_lines.js` の `ROUTE_SYMBOL_BY_LINE_NAME` で路線名に紐付ける。
