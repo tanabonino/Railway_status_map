@@ -114,7 +114,6 @@ Railway_status_map/
       shinetsu_tadami.js
       shinetsu_yahiko.js
       shinetsu_yonesaka.js
-      shinetsu_gono.js
     group_direct_service.js      # 方面/サービス単位（移行中）
     line_yamanote.js
     line_chuo_rapid.js
