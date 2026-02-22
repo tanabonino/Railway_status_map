@@ -1503,7 +1503,7 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
 
   function directionBasisText(lineName) {
     if (isLoopLineName(lineName)) {
-      return "方向基準: → 内回り / ← 外回り";
+      return "方向基準: → 外回り / ← 内回り";
     }
     return "方向基準: → 下り / ← 上り";
   }
@@ -1719,16 +1719,16 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
 
   function applyTrackActivation(topTrack, bottomTrack, mode, statusClass) {
     if (mode === "both") {
-      activateTrack(topTrack, statusClass, "flow-right");
-      activateTrack(bottomTrack, statusClass, "flow-left");
+      activateTrack(topTrack, statusClass, "flow-left");
+      activateTrack(bottomTrack, statusClass, "flow-right");
       return;
     }
     if (mode === "up") {
-      activateTrack(topTrack, statusClass, "flow-right");
+      activateTrack(topTrack, statusClass, "flow-left");
       return;
     }
     if (mode === "down") {
-      activateTrack(bottomTrack, statusClass, "flow-left");
+      activateTrack(bottomTrack, statusClass, "flow-right");
       return;
     }
     activateTrack(topTrack, statusClass, "flow-pulse");
@@ -1823,6 +1823,7 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
       .replace(/'/g, "&#39;");
   }
 })();
+
 
 
 
