@@ -3,43 +3,41 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JR東日本運行状況マップ（Cheer Design）</title>
+  <title>JR東日本運行状況マップ</title>
   <style>
     :root {
-      --bg: #fff7fb;
+      --bg: #edf6f0;
       --panel: #ffffff;
-      --line: #ffd7e8;
-      --text: #4a2a3a;
-      --muted: #8a5f73;
-      --ok: #16a34a;
-      --warn: #d97706;
-      --stop: #dc2626;
-      --suspend: #be185d;
-      --accent: #ff6fa8;
-      --accent-soft: #ffe3ef;
-      --hero: #ff82b4;
-      --hero2: #ffa6c8;
+      --line: #c7ddce;
+      --text: #173424;
+      --muted: #4f6a59;
+      --ok: #008a4a;
+      --warn: #9a6700;
+      --stop: #b42318;
+      --suspend: #7a1b17;
+      --accent: #007f41;
+      --accent-soft: #e5f5eb;
+      --hero: #005d31;
+      --hero2: #007a3d;
     }
 
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family: "Hiragino Maru Gothic ProN", "Yu Gothic UI", "Yu Gothic", Meiryo, sans-serif;
+      font-family: "Yu Gothic UI", "Yu Gothic", Meiryo, sans-serif;
       color: var(--text);
       background:
-        radial-gradient(circle at 20% -10%, rgba(255, 179, 213, 0.6) 0%, rgba(255, 179, 213, 0) 40%),
-        radial-gradient(circle at 80% 0%, rgba(255, 227, 239, 0.9) 0%, rgba(255, 227, 239, 0) 42%),
-        linear-gradient(180deg, #fff1f8 0%, var(--bg) 45%, #fff9fc 100%);
+        radial-gradient(circle at 85% 0%, rgba(120, 194, 146, 0.34) 0%, rgba(120, 194, 146, 0) 34%),
+        linear-gradient(180deg, #eef7f1 0%, var(--bg) 38%, #eef7f1 100%);
     }
 
     .hero {
       background:
-        radial-gradient(circle at 90% -20%, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 40%),
-        linear-gradient(135deg, var(--hero) 0%, var(--hero2) 72%);
-      color: #fff7fb;
-      border-bottom: 1px solid rgba(255,255,255,0.22);
-      box-shadow: inset 0 -1px 0 rgba(255,255,255,0.25);
+        linear-gradient(135deg, var(--hero) 0%, var(--hero2) 75%),
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 2px, transparent 2px, transparent 10px);
+      color: #effcf2;
+      border-bottom: 1px solid rgba(255,255,255,0.14);
     }
 
     .hero-inner {
@@ -62,73 +60,9 @@
       font-weight: 700;
       padding: 3px 10px;
       border-radius: 999px;
-      background: rgba(255,255,255,0.24);
-      border: 1px solid rgba(255,255,255,0.36);
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.24);
       letter-spacing: 0.02em;
-    }
-
-    .theme-switch-wrap {
-      margin-left: auto;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 4px 8px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.2);
-      border: 1px solid rgba(255,255,255,0.35);
-    }
-
-    .theme-switch-label {
-      font-size: 11px;
-      font-weight: 800;
-      color: #fff7fb;
-      letter-spacing: 0.02em;
-      user-select: none;
-    }
-
-    .theme-switch {
-      position: relative;
-      width: 46px;
-      height: 24px;
-      display: inline-block;
-    }
-
-    .theme-switch input {
-      position: absolute;
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .theme-slider {
-      position: absolute;
-      inset: 0;
-      border-radius: 999px;
-      cursor: pointer;
-      background: rgba(255,255,255,0.45);
-      border: 1px solid rgba(255,255,255,0.65);
-      transition: background .2s ease;
-    }
-
-    .theme-slider::before {
-      content: "";
-      position: absolute;
-      width: 18px;
-      height: 18px;
-      left: 2px;
-      top: 2px;
-      border-radius: 50%;
-      background: #ffffff;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
-      transition: transform .2s ease;
-    }
-
-    .theme-switch input:checked + .theme-slider {
-      background: rgba(255,255,255,0.72);
-    }
-
-    .theme-switch input:checked + .theme-slider::before {
-      transform: translateX(21px);
     }
 
     .hero h1 {
@@ -140,7 +74,7 @@
 
     .hero p {
       margin: 0;
-      color: #fff0f7;
+      color: #d4efde;
       line-height: 1.7;
       max-width: 860px;
       font-size: 14px;
@@ -154,11 +88,11 @@
     }
 
     .flow-card {
-      border: 1px solid rgba(255,255,255,0.32);
-      background: rgba(255,255,255,0.16);
-      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.22);
+      background: rgba(255,255,255,0.08);
+      border-radius: 10px;
       padding: 10px 12px;
-      backdrop-filter: blur(2px);
+      backdrop-filter: blur(1px);
     }
 
     .flow-card strong {
@@ -170,7 +104,7 @@
 
     .flow-card span {
       font-size: 12px;
-      color: #ffeef6;
+      color: #d4efde;
       line-height: 1.45;
       display: block;
     }
@@ -188,9 +122,9 @@
     .panel {
       background: var(--panel);
       border: 1px solid var(--line);
-      border-radius: 16px;
+      border-radius: 12px;
       padding: 16px;
-      box-shadow: 0 8px 24px rgba(190, 24, 93, 0.08);
+      box-shadow: 0 2px 12px rgba(0, 63, 31, 0.08);
       min-width: 0;
     }
 
@@ -205,9 +139,9 @@
 
     .primary-block {
       margin-top: 10px;
-      border: 1px solid #ffd7e8;
-      background: linear-gradient(180deg, #fff9fc 0%, #fff1f7 100%);
-      border-radius: 14px;
+      border: 1px solid #b9dec6;
+      background: linear-gradient(180deg, #f3fcf6 0%, #eaf7ef 100%);
+      border-radius: 10px;
       padding: 10px;
     }
 
@@ -234,13 +168,11 @@
       border-color: var(--accent);
       cursor: pointer;
       font-weight: 700;
-      box-shadow: 0 5px 14px rgba(255, 111, 168, 0.25);
     }
 
     button.secondary {
       background: #fff;
       color: var(--accent);
-      box-shadow: none;
     }
 
     .stack { display: grid; gap: 8px; margin-top: 10px; }
@@ -258,9 +190,9 @@
     .direction-filter-wrap {
       margin: 6px 0 12px;
       padding: 8px;
-      border: 1px solid #ffd7e8;
-      border-radius: 12px;
-      background: #fff6fb;
+      border: 1px solid #d4e6da;
+      border-radius: 10px;
+      background: #f5fbf7;
     }
 
     .direction-filters {
@@ -274,10 +206,10 @@
       width: auto;
       min-width: 84px;
       padding: 6px 10px;
-      border: 1px solid #ffc7de;
+      border: 1px solid #bfd7c8;
       border-radius: 999px;
       background: #ffffff;
-      color: #7a3756;
+      color: #1f4f34;
       font-size: 12px;
       font-weight: 700;
       cursor: pointer;
@@ -312,7 +244,7 @@
 
     .card {
       border: 1px solid var(--line);
-      border-radius: 16px;
+      border-radius: 12px;
       background: #fff;
       padding: 12px;
       min-width: 0;
@@ -814,680 +746,30 @@
       .hero h1 { font-size: 24px; }
       .meta-grid { grid-template-columns: 1fr; }
     }
-
-    /* Ultra Cute Mood Theme Override */
-    :root {
-      --bg: #fff6fb;
-      --panel: #ffffff;
-      --line: #ffc9e1;
-      --text: #5b2b45;
-      --muted: #9a6680;
-      --accent: #ff5fa2;
-      --hero: #ff7cb3;
-      --hero2: #ffc2db;
-      --ok: #22c55e;
-      --warn: #f59e0b;
-      --suspend: #db2777;
-      --stop: #ef4444;
-    }
-
-    body {
-      background:
-        radial-gradient(circle at 12% 5%, rgba(255, 200, 225, 0.82) 0%, rgba(255, 200, 225, 0) 38%),
-        radial-gradient(circle at 92% 12%, rgba(255, 235, 197, 0.72) 0%, rgba(255, 235, 197, 0) 42%),
-        radial-gradient(circle at 85% 80%, rgba(250, 212, 255, 0.62) 0%, rgba(250, 212, 255, 0) 38%),
-        repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,0.7) 0 3px, rgba(255,255,255,0) 3px 18px),
-        linear-gradient(180deg, #fff0f8 0%, #fff6fb 48%, #fffafd 100%);
-    }
-
-    body::before,
-    body::after {
-      content: "";
-      position: fixed;
-      pointer-events: none;
-      z-index: -1;
-      border-radius: 999px;
-      filter: blur(1px);
-      opacity: 0.68;
-      animation: candyFloat 9s ease-in-out infinite;
-    }
-
-    body::before {
-      top: 8%;
-      left: -40px;
-      width: 240px;
-      height: 130px;
-      background: radial-gradient(circle at 30% 50%, #ffd7eb 0%, #ffd7eb 28%, #ffd7eb00 62%);
-    }
-
-    body::after {
-      right: -55px;
-      top: 58%;
-      width: 270px;
-      height: 145px;
-      background: radial-gradient(circle at 70% 50%, #ffe9bf 0%, #ffe9bf 30%, #ffe9bf00 65%);
-      animation-delay: 2.2s;
-    }
-
-    @keyframes candyFloat {
-      0%, 100% { transform: translateY(0px) scale(1); }
-      50% { transform: translateY(12px) scale(1.05); }
-    }
-
-    .hero {
-      margin: 8px 10px 0;
-      border-radius: 28px;
-      border: 2px solid rgba(255,255,255,0.42);
-      box-shadow: 0 20px 45px rgba(190, 24, 93, 0.2);
-    }
-
-    .hero-inner {
-      padding: 30px 20px 24px;
-      gap: 18px;
-    }
-
-    .chip {
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.54);
-      background: rgba(255,255,255,0.28);
-      box-shadow: 0 4px 10px rgba(153, 30, 89, 0.12);
-    }
-
-    .hero h1 {
-      font-size: 36px;
-      letter-spacing: 0.03em;
-      text-shadow: 0 3px 10px rgba(145, 24, 83, 0.34);
-    }
-
-    .hero p {
-      max-width: 940px;
-      font-size: 15px;
-      font-weight: 700;
-      color: #fff0f8;
-    }
-
-    .flow-card {
-      border-radius: 24px;
-      border: 1px solid rgba(255,255,255,0.45);
-      background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.2) 100%);
-      box-shadow: 0 10px 22px rgba(150, 33, 93, 0.16);
-    }
-
-    .wrap {
-      gap: 20px;
-      padding: 18px;
-    }
-
-    .panel {
-      border-radius: 26px;
-      border-width: 2px;
-      box-shadow: 0 14px 32px rgba(190, 24, 93, 0.12);
-      backdrop-filter: blur(2px);
-    }
-
-    .left-panel {
-      background: linear-gradient(180deg, #fffafe 0%, #fff2f9 100%);
-    }
-
-    .main-panel {
-      background: linear-gradient(180deg, #fffdfd 0%, #fff8fb 100%);
-    }
-
-    .station-panel {
-      background: linear-gradient(180deg, #fffdf8 0%, #fff7f0 100%);
-    }
-
-    .primary-block {
-      border-radius: 18px;
-      border-width: 2px;
-      background: linear-gradient(180deg, #fffafd 0%, #ffedf7 100%);
-    }
-
-    textarea, select, input {
-      border-radius: 16px;
-      border: 2px solid #ffd6e8;
-      background: #fffbfd;
-    }
-
-    button {
-      border-radius: 999px;
-      font-weight: 800;
-      letter-spacing: 0.02em;
-      box-shadow:
-        0 8px 0 #e54c8f,
-        0 11px 20px rgba(229, 76, 143, 0.35);
-      transform: translateY(-1px);
-    }
-
-    button:hover {
-      filter: brightness(1.03);
-    }
-
-    button:active {
-      transform: translateY(4px);
-      box-shadow:
-        0 4px 0 #e54c8f,
-        0 6px 10px rgba(229, 76, 143, 0.3);
-    }
-
-    button.secondary {
-      box-shadow: none;
-      background: #fff;
-      border-width: 2px;
-    }
-
-    .direction-filter-wrap {
-      border-radius: 16px;
-      border-width: 2px;
-      background: #fff5fb;
-    }
-
-    .dir-filter-btn {
-      border-width: 2px;
-      border-radius: 999px;
-      color: #7f345a;
-      font-weight: 800;
-      background: linear-gradient(180deg, #fff 0%, #fff6fb 100%);
-    }
-
-    .dir-filter-btn.active {
-      background: linear-gradient(180deg, #ff72ad 0%, #ff4f99 100%);
-      border-color: #ff4f99;
-      box-shadow: 0 6px 14px rgba(255, 79, 153, 0.36);
-    }
-
-    .card {
-      border-radius: 24px;
-      border-width: 2px;
-      box-shadow: 0 10px 22px rgba(190, 24, 93, 0.11);
-      animation: cardPop .28s ease-out both;
-      transform-origin: center top;
-    }
-
-    @keyframes cardPop {
-      from { opacity: 0; transform: translateY(8px) scale(0.99); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    .badge {
-      border-radius: 999px;
-      font-weight: 800;
-      padding: 6px 12px;
-      letter-spacing: 0.02em;
-    }
-
-    .stations .station {
-      border-radius: 999px;
-      padding: 9px 14px;
-      border-width: 2px;
-      border-color: #ffc6df;
-      background: linear-gradient(180deg, #ffffff 0%, #fff3f9 100%);
-      box-shadow: 0 3px 8px rgba(229, 76, 143, 0.12);
-    }
-
-    .stations .station:hover {
-      transform: translateY(-2px) scale(1.04);
-      box-shadow: 0 9px 18px rgba(255, 95, 162, 0.24);
-    }
-
-    .stations .station.station-selected {
-      border-color: #ff4f99;
-      box-shadow: 0 0 0 3px rgba(255, 79, 153, 0.2), 0 10px 18px rgba(255, 79, 153, 0.22);
-    }
-
-    .segment-loop-close {
-      border-radius: 16px;
-      border-style: solid;
-      border-color: #ffc7e0;
-      background: #fff7fb;
-    }
-
-    .station-detail-chip {
-      border-radius: 999px;
-      border-width: 2px;
-      background: #fff6fb;
-      color: #7f345a;
-      font-weight: 800;
-    }
-
-    .station-xfer-item {
-      border-radius: 14px;
-      border-width: 2px;
-      background: linear-gradient(180deg, #fff 0%, #fff5fb 100%);
-    }
-
-    body.theme-cute .meta {
-      color: #6a4055;
-    }
-
-    body.theme-cute .direction-basis {
-      color: #b03a73;
-    }
-
-    body.theme-cute .meta-main {
-      border-color: #ffd0e4;
-      background: #fff3fa;
-    }
-
-    body.theme-cute .meta-source {
-      border-color: #ffd0e4;
-      background: #fffdfd;
-    }
-
-    body.theme-cute .meta-label {
-      color: #9b6b82;
-    }
-
-    body.theme-cute .meta-source-text {
-      color: #6a4055;
-    }
-
-    body.theme-cute .legend-item {
-      background: #fff4fa;
-    }
-
-    body.theme-cute .legend-mark {
-      border-color: #f5b9d4;
-      background: #ffe3f0;
-    }
-
-    body.theme-cute .legend-mark.up {
-      background: linear-gradient(to bottom, #d92d20 0 50%, #ffe3f0 50% 100%);
-    }
-
-    body.theme-cute .legend-mark.down {
-      background: linear-gradient(to bottom, #ffe3f0 0 50%, #d92d20 50% 100%);
-    }
-
-    body.theme-cute .stations {
-      border-color: #ffd0e4;
-      background: #fff2f9;
-      scrollbar-color: #f19cc4 #ffe5f2;
-    }
-
-    body.theme-cute .stations::-webkit-scrollbar-track {
-      background: #ffe5f2;
-    }
-
-    body.theme-cute .stations::-webkit-scrollbar-thumb {
-      background: #f19cc4;
-    }
-
-    body.theme-cute .stations .station:hover {
-      border-color: #ff8fbe;
-      box-shadow: 0 7px 16px rgba(255, 95, 162, 0.24);
-    }
-
-    body.theme-cute .stations .station.station-with-xfer {
-      border-color: #ff5fa2;
-      box-shadow: inset 0 0 0 1px rgba(255, 95, 162, 0.25);
-    }
-
-    body.theme-cute .stations .station.station-with-xfer::after {
-      background: #ff5fa2;
-    }
-
-    body.theme-cute .stations .station.station-selected {
-      border-color: #ff3d93;
-      box-shadow: 0 0 0 3px rgba(255, 61, 147, 0.2), 0 10px 18px rgba(255, 61, 147, 0.25);
-    }
-
-    body.theme-cute .xfer-badge {
-      border-color: #ffc3de;
-      background: #fff0f8;
-      color: #a52f6b;
-    }
-
-    body.theme-cute .xfer-more {
-      color: #9a6680;
-    }
-
-    body.theme-cute .station-detail-head {
-      border-color: #ffd0e4;
-      background: #fff2f9;
-    }
-
-    body.theme-cute .station-detail-chip {
-      border-color: #ffbfda;
-      color: #8f3560;
-    }
-
-    body.theme-cute .station-detail-block {
-      border-color: #ffd0e4;
-      background: #fffdfd;
-    }
-
-    body.theme-cute .station-detail-label {
-      color: #9b6b82;
-    }
-
-    body.theme-cute .station-detail-value,
-    body.theme-cute .station-xfer-item {
-      color: #6a4055;
-    }
-
-    body.theme-cute .station-xfer-item {
-      border-color: #ffd0e4;
-      background: linear-gradient(180deg, #ffffff 0%, #fff3fa 100%);
-    }
-
-    body.theme-cute .segment-loop-close {
-      border-color: #ffbfda;
-      background: #fff4fa;
-    }
-
-    body.theme-cute .seg-track {
-      background: #ffd9e9;
-      border-color: #ffd9e9;
-    }
-
-    /* Standard Theme (railway_status_map.html-like) */
-    body.theme-standard {
-      --bg: #edf6f0;
-      --panel: #ffffff;
-      --line: #c7ddce;
-      --text: #173424;
-      --muted: #4f6a59;
-      --ok: #008a4a;
-      --warn: #9a6700;
-      --stop: #b42318;
-      --suspend: #7a1b17;
-      --accent: #007f41;
-      --accent-soft: #e5f5eb;
-      --hero: #005d31;
-      --hero2: #007a3d;
-      font-family: "Yu Gothic UI", "Yu Gothic", Meiryo, sans-serif;
-      background:
-        radial-gradient(circle at 85% 0%, rgba(120, 194, 146, 0.34) 0%, rgba(120, 194, 146, 0) 34%),
-        linear-gradient(180deg, #eef7f1 0%, var(--bg) 38%, #eef7f1 100%);
-    }
-
-    body.theme-standard::before,
-    body.theme-standard::after {
-      display: none;
-    }
-
-    body.theme-standard .hero {
-      margin: 0;
-      margin-top: 0;
-      border-radius: 0;
-      border: none;
-      box-shadow: none;
-      background:
-        linear-gradient(135deg, var(--hero) 0%, var(--hero2) 75%),
-        repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 2px, transparent 2px, transparent 10px);
-      border-bottom: 1px solid rgba(255,255,255,0.14);
-    }
-
-    body.theme-standard .hero-inner {
-      padding: 24px 16px 20px;
-      gap: 16px;
-    }
-
-    body.theme-standard .hero h1 {
-      font-size: 30px;
-      text-shadow: none;
-    }
-
-    body.theme-standard .hero p {
-      color: #d4efde;
-      font-size: 14px;
-      font-weight: 400;
-      max-width: 860px;
-    }
-
-    body.theme-standard .flow-card {
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.22);
-      background: rgba(255,255,255,0.08);
-      box-shadow: none;
-      backdrop-filter: blur(1px);
-    }
-
-    body.theme-standard .theme-switch-wrap {
-      background: rgba(255,255,255,0.14);
-      border-color: rgba(255,255,255,0.24);
-    }
-
-    body.theme-standard .wrap {
-      gap: 16px;
-      padding: 16px;
-    }
-
-    body.theme-standard .panel {
-      border-radius: 12px;
-      border-width: 1px;
-      box-shadow: 0 2px 12px rgba(0, 63, 31, 0.08);
-      backdrop-filter: none;
-    }
-
-    body.theme-standard .left-panel,
-    body.theme-standard .main-panel,
-    body.theme-standard .station-panel {
-      background: #fff;
-    }
-
-    body.theme-standard .primary-block {
-      border-radius: 10px;
-      border-width: 1px;
-      border-color: #b9dec6;
-      background: linear-gradient(180deg, #f3fcf6 0%, #eaf7ef 100%);
-    }
-
-    body.theme-standard textarea,
-    body.theme-standard select,
-    body.theme-standard input {
-      border-radius: 8px;
-      border-width: 1px;
-      border-color: var(--line);
-      background: #fff;
-    }
-
-    body.theme-standard button {
-      border-radius: 8px;
-      box-shadow: none;
-      transform: none;
-      font-weight: 700;
-    }
-
-    body.theme-standard button:active {
-      transform: none;
-      box-shadow: none;
-    }
-
-    body.theme-standard .direction-filter-wrap {
-      border-radius: 10px;
-      border-width: 1px;
-      border-color: #d4e6da;
-      background: #f5fbf7;
-    }
-
-    body.theme-standard .dir-filter-btn {
-      border-width: 1px;
-      color: #1f4f34;
-      font-weight: 700;
-      background: #fff;
-    }
-
-    body.theme-standard .dir-filter-btn.active {
-      background: var(--accent);
-      border-color: var(--accent);
-      box-shadow: none;
-    }
-
-    body.theme-standard .card {
-      border-radius: 12px;
-      border-width: 1px;
-      box-shadow: none;
-      animation: none;
-    }
-
-    body.theme-standard .stations .station {
-      border-radius: 999px;
-      border-width: 1px;
-      box-shadow: none;
-      transform: none;
-    }
-
-    body.theme-standard .stations .station:hover {
-      transform: none;
-      box-shadow: none;
-    }
-
-    body.theme-standard .stations .station.station-selected {
-      box-shadow: none;
-    }
-
-    body.theme-standard .segment-loop-close {
-      border-style: dashed;
-      border-width: 1px;
-      border-color: #9dbfaa;
-      border-radius: 10px;
-      background: rgba(230, 245, 235, 0.7);
-    }
-
-    body.theme-standard .meta {
-      color: #374151;
-    }
-
-    body.theme-standard .direction-basis {
-      color: #0f5b32;
-    }
-
-    body.theme-standard .meta-main {
-      border: 1px solid #d6e4da;
-      border-radius: 8px;
-      background: #f5fbf7;
-    }
-
-    body.theme-standard .meta-source {
-      border: 1px solid #d6e4da;
-      border-radius: 8px;
-      background: #ffffff;
-    }
-
-    body.theme-standard .meta-label {
-      color: #5f7467;
-    }
-
-    body.theme-standard .meta-source-text {
-      color: #2f4838;
-    }
-
-    body.theme-standard .stations {
-      border: 1px solid #d4e6da;
-      border-radius: 10px;
-      background: #f5fbf7;
-      scrollbar-color: #8fa799 #dfe8e1;
-    }
-
-    body.theme-standard .stations::-webkit-scrollbar-track {
-      background: #dfe8e1;
-    }
-
-    body.theme-standard .stations::-webkit-scrollbar-thumb {
-      background: #8fa799;
-    }
-
-    body.theme-standard .stations .station:hover {
-      border-color: #9cc8ac;
-      box-shadow: 0 0 0 2px rgba(118, 174, 136, 0.18);
-    }
-
-    body.theme-standard .stations .station.station-with-xfer {
-      border-color: #1f8a53;
-      box-shadow: inset 0 0 0 1px rgba(31, 138, 83, 0.16);
-    }
-
-    body.theme-standard .stations .station.station-with-xfer::after {
-      background: #1f8a53;
-    }
-
-    body.theme-standard .stations .station.station-selected {
-      border-color: #0a6e3a;
-      box-shadow: 0 0 0 2px rgba(10, 110, 58, 0.25);
-    }
-
-    body.theme-standard .xfer-badge {
-      border: 1px solid #bbf7d0;
-      background: #f0fdf4;
-      color: #166534;
-    }
-
-    body.theme-standard .xfer-more {
-      color: #475569;
-    }
-
-    body.theme-standard .station-detail-head {
-      border: 1px solid #d6e4da;
-      border-radius: 10px;
-      background: #f5fbf7;
-    }
-
-    body.theme-standard .station-detail-chip {
-      border: 1px solid #bfd7c8;
-      border-radius: 999px;
-      background: #ffffff;
-      color: #1f4f34;
-    }
-
-    body.theme-standard .station-detail-block {
-      border: 1px solid #d6e4da;
-      border-radius: 10px;
-      background: #ffffff;
-    }
-
-    body.theme-standard .station-detail-label {
-      color: #5f7467;
-    }
-
-    body.theme-standard .station-detail-value,
-    body.theme-standard .station-xfer-item {
-      color: #2f4838;
-    }
-
-    body.theme-standard .station-xfer-item {
-      border: 1px solid #d6e4da;
-      border-radius: 8px;
-      background: #f8fcf9;
-    }
-
-    body.theme-standard .seg-track {
-      background: #c4d8cb;
-      border: 1px solid #c4d8cb;
-    }
   </style>
 </head>
-<body class="theme-cute">
+<body>
   <header class="hero">
     <div class="hero-inner">
       <div class="hero-top">
         <span class="chip">FILE:// 実行</span>
         <span class="chip">EDGE 対応</span>
         <span class="chip">インストール不要</span>
-        <div class="theme-switch-wrap" title="デザイン切替">
-          <span class="theme-switch-label">Standard</span>
-          <label class="theme-switch">
-            <input id="designModeToggle" type="checkbox" checked />
-            <span class="theme-slider"></span>
-          </label>
-          <span class="theme-switch-label">Cute Pop</span>
-        </div>
       </div>
-      <h1>JR東日本運行状況 Cute Preview</h1>
-      <p>がんばる日の心を少し軽く。運行情報をすばやく整理しながら、見た目はやさしくかわいく保てるデザインです。</p>
+      <h1>JR東日本運行状況 Preview （駅データ登録中）</h1>
+      <p>運行情報の文章を貼り付けるだけで、路線・区間・原因・再開見込みを自動抽出して路線カードへ反映します。手動入力は補助機能として利用できます。</p>
       <div class="flow">
         <div class="flow-card">
-          <strong>1. まず貼り付ける</strong>
-          <span>公式文をそのまま入れてOK</span>
+          <strong>1. 自然文入力</strong>
+          <span>公式発表文をそのまま貼り付け</span>
         </div>
         <div class="flow-card">
-          <strong>2. すぐ見える化</strong>
+          <strong>2. 解析して反映</strong>
           <span>路線・区間・状態を自動抽出</span>
         </div>
         <div class="flow-card">
-          <strong>3. 最小の手直しで完了</strong>
-          <span>必要な項目だけ整える</span>
+          <strong>3. 必要時のみ手動補正</strong>
+          <span>抜けた項目だけ最小修正</span>
         </div>
       </div>
     </div>
@@ -1653,36 +935,6 @@
 <script src="station_metadata/lines/tohoku_tadami.js"></script>
 <script src="station_metadata/lines/tohoku_suigun.js"></script>
 <script src="station_metadata/lines/tohoku_joban.js"></script>
-<script>
-  (function () {
-    var KEY = "designThemeModeV1";
-    var toggle = document.getElementById("designModeToggle");
-    var body = document.body;
-    if (!toggle || !body) return;
-
-    function applyTheme(mode) {
-      if (mode === "standard") {
-        body.classList.add("theme-standard");
-        body.classList.remove("theme-cute");
-        toggle.checked = false;
-      } else {
-        body.classList.remove("theme-standard");
-        body.classList.add("theme-cute");
-        toggle.checked = true;
-      }
-    }
-
-    var saved = "";
-    try { saved = localStorage.getItem(KEY) || ""; } catch (_) {}
-    applyTheme(saved === "standard" ? "standard" : "cute");
-
-    toggle.addEventListener("change", function () {
-      var mode = toggle.checked ? "cute" : "standard";
-      applyTheme(mode);
-      try { localStorage.setItem(KEY, mode); } catch (_) {}
-    });
-  })();
-</script>
 <script src="station_metadata.js"></script>
 <script src="railway_lines.js"></script>
 </body>

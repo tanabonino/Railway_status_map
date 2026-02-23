@@ -311,7 +311,7 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
       target.directionMode = manualDir.mode;
       target.directionUpLabel = manualDir.upLabel;
       target.directionDownLabel = manualDir.downLabel;
-      target.section = ui.manualSection.value.trim();
+      target.section = normalize(ui.manualSection.value);
       target.sectionRanges = rangesFromSectionText(target.section);
       target.cause = ui.manualCause.value.trim();
       target.resume = ui.manualResume.value.trim();
@@ -1296,7 +1296,7 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
         const ranges = Array.isArray(s.sectionRanges) && s.sectionRanges.length
           ? s.sectionRanges
           : rangesFromSectionText(s.section);
-        const affectedMap = buildAffectedSegments(baseStations, ranges, isLoopLine);
+        const affectedMap = buildAffectedSegments(baseStations, ranges, isLoopLine, s.directionMode || "unknown");
         const wholeLineByStatus = (!ranges.length && !cleanText(s.section) && (s.status === "suspend" || s.status === "stop"));
         const segmentCount = isLoopLine ? baseStations.length : baseStations.length - 1;
         if (wholeLineByStatus) {
@@ -1606,13 +1606,15 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
   function rangesFromSectionText(sectionText) {
     const ranges = [];
     String(sectionText || "").split("/").forEach(function (chunk) {
-      const part = cleanText(chunk);
+      const part = normalize(cleanText(chunk));
       if (!part) {
         return;
       }
-      const m = part.match(/^(.+?)〜(.+)$/);
-      if (m) {
-        ranges.push({ from: cleanText(m[1]), to: cleanText(m[2]) });
+      const m = part.match(/^(.+?)[〜～\-－→←↔](.+)$/);
+      const mFromTo = m ? null : part.match(/^(.+?)から(.+?)(?:まで)?$/);
+      const picked = m || mFromTo;
+      if (picked) {
+        ranges.push({ from: cleanText(normalize(picked[1])), to: cleanText(normalize(picked[2])) });
       }
     });
     return ranges;
@@ -1661,7 +1663,7 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
     });
   }
 
-  function buildAffectedSegments(stations, ranges, isLoopLine) {
+  function buildAffectedSegments(stations, ranges, isLoopLine, directionMode) {
     const affected = {};
     const count = Array.isArray(stations) ? stations.length : 0;
     const loopEnabled = !!isLoopLine && count >= 2;
@@ -1684,7 +1686,14 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
 
       const forward = loopSegmentPath(count, fromIdx, toIdx, true);
       const backward = loopSegmentPath(count, fromIdx, toIdx, false);
-      const chosen = forward.length <= backward.length ? forward : backward;
+      let chosen;
+      if (directionMode === "down") {
+        chosen = forward;
+      } else if (directionMode === "up") {
+        chosen = backward;
+      } else {
+        chosen = forward.length <= backward.length ? forward : backward;
+      }
       chosen.forEach(function (idx) {
         affected[idx] = true;
       });
