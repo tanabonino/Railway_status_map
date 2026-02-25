@@ -42,6 +42,7 @@ function normalizeLegacyLine(line) {
     lineName: (line && line.lineName) || "名称未設定",
     lineNameKana: (line && line.lineNameKana) || "",
     scope: (line && line.scope) || "",
+    branchLayout: normalizeBranchLayout(line && line.branchLayout, stations.length),
     stations: stations.map(function (st) {
       const stationName = st && st.name ? String(st.name) : "駅名未設定";
       const meta = getStationMetadataByName(stationName) || {};
@@ -53,6 +54,23 @@ function normalizeLegacyLine(line) {
         interchanges: mergeInterchanges(inlineInterchanges, meta.interchanges)
       };
     })
+  };
+}
+
+function normalizeBranchLayout(layout, stationCount) {
+  const l = layout || {};
+  const junctionIndex = Number(l.junctionIndex);
+  const branchStartIndex = Number(l.branchStartIndex);
+  if (!Number.isInteger(junctionIndex) || !Number.isInteger(branchStartIndex)) {
+    return null;
+  }
+  const maxIdx = Math.max(0, Number(stationCount || 0) - 1);
+  if (junctionIndex < 0 || branchStartIndex <= junctionIndex || branchStartIndex > maxIdx) {
+    return null;
+  }
+  return {
+    junctionIndex: junctionIndex,
+    branchStartIndex: branchStartIndex
   };
 }
 
@@ -108,6 +126,7 @@ function buildLineDataMap(railDataRoot, fallbackChunks) {
       lineName: line.lineName || lineId,
       lineNameKana: line.lineNameKana || "",
       scope: line.scope || "",
+      branchLayout: normalizeBranchLayout(line.branchLayout, mappedStations.length),
       stations: mappedStations
     };
   });
@@ -243,6 +262,9 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
     "在来線特急": ["成田エクスプレス", "ひたち・ときわ", "あずさ・かいじ・富士回遊", "しなの", "わかしお・さざなみ", "しおさい", "日光・きぬがわ", "草津・四万・あかぎ", "踊り子・湘南", "いなほ・しらゆき", "つがる", "サンライズ瀬戸・出雲", "臨時列車"],
     "新幹線": ["東北新幹線", "山形新幹線", "秋田新幹線", "上越新幹線", "北陸新幹線"]
   };
+  const DIRECTION_AREA_FILTER = {
+    "常磐方面": ["関東"]
+  };
 
   Object.keys(directionLinesFromData).forEach(function (groupName) {
     DIRECTION_LINES[groupName] = directionLinesFromData[groupName];
@@ -366,15 +388,17 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
     } catch (_) {}
   }
 
-  function makeStationKey(lineId, stationName) {
-    return String(lineId || "") + "::" + normalizeStationToken(stationName);
+  function makeStationKey(lineId, stationName, segmentHint) {
+    const base = String(lineId || "") + "::" + normalizeStationToken(stationName);
+    const hint = String(segmentHint || "");
+    return hint ? (base + "::" + hint) : base;
   }
 
-  function setSelectedStation(lineId, line, station) {
+  function setSelectedStation(lineId, line, station, segmentHint) {
     const lineSafe = line || {};
     const stationSafe = station || {};
     selectedStation = {
-      key: makeStationKey(lineId, stationSafe.name),
+      key: makeStationKey(lineId, stationSafe.name, segmentHint),
       lineId: lineId,
       lineName: lineSafe.lineName || "",
       lineScope: lineSafe.scope || "",
@@ -439,12 +463,21 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
     });
   }
 
-  function lineMatchesDirection(lineName) {
+  function lineMatchesDirection(line) {
     if (!selectedDirectionFilter || selectedDirectionFilter === "all") {
       return true;
     }
+    const lineName = (line && line.lineName) || "";
     const targets = DIRECTION_LINES[selectedDirectionFilter] || [];
-    return targets.indexOf(lineName) !== -1;
+    if (targets.indexOf(lineName) === -1) {
+      return false;
+    }
+    const areaFilters = DIRECTION_AREA_FILTER[selectedDirectionFilter];
+    if (!Array.isArray(areaFilters) || !areaFilters.length) {
+      return true;
+    }
+    const area = (line && line.area) || "";
+    return areaFilters.indexOf(area) !== -1;
   }
 
   function buildLineNameIndex() {
@@ -1185,7 +1218,7 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
       ensureLine(lineId);
 
       const line = railwayLinesData[lineId];
-      if (!lineMatchesDirection(line.lineName)) {
+      if (!lineMatchesDirection(line)) {
         return;
       }
       const s = state[lineId];
@@ -1273,7 +1306,99 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
       const preservedScroll = previousScrollByLine[lineId];
       let loopForScrollRestore = false;
 
-      if (!line.stations.length) {
+      const branchLayout = resolveBranchLayout(line);
+      if (branchLayout && line.stations.length) {
+        stations.classList.add("stations-branch-host");
+        const branchPreview = document.createElement("div");
+        branchPreview.className = "stations-branch-preview";
+        const baseStations = line.stations;
+        const branchStart = branchLayout.branchStartIndex;
+        const branchJunctionIndex = branchLayout.junctionIndex;
+        const mainStations = baseStations.slice(0, branchStart);
+        const branchStations = baseStations.slice(branchStart);
+
+        function appendRow(rowType, list, startIndex, offsetStationCount) {
+          if (!list.length) {
+            return;
+          }
+          const row = document.createElement("div");
+          row.className = "stations-branch-row row-" + rowType;
+
+          const head = document.createElement("span");
+          head.className = "stations-branch-head";
+          head.textContent = rowType === "main" ? "本線" : "支線";
+          row.appendChild(head);
+
+          const offset = Math.max(0, Number(offsetStationCount) || 0);
+          if (offset > 0) {
+            for (let i = 0; i < offset; i += 1) {
+              const ghostStation = document.createElement("span");
+              ghostStation.className = "station station-ghost";
+              ghostStation.setAttribute("aria-hidden", "true");
+              row.appendChild(ghostStation);
+              const ghostSegment = document.createElement("span");
+              ghostSegment.className = "segment segment-ghost";
+              ghostSegment.setAttribute("aria-hidden", "true");
+              row.appendChild(ghostSegment);
+            }
+          }
+          if (rowType === "branch") {
+            const join = document.createElement("span");
+            join.className = "branch-connector";
+            join.textContent = "└";
+            join.title = "上菅谷から支線分岐";
+            row.appendChild(join);
+          }
+
+          list.forEach(function (st, idx) {
+            const station = document.createElement("span");
+            station.className = "station";
+
+            const stationName = document.createElement("span");
+            stationName.className = "station-name";
+            stationName.textContent = st.name;
+            station.appendChild(stationName);
+
+            const interchangeLabels = collectInterchangeLabels(st);
+            const baseIdx = startIndex + idx;
+            const segmentHint = String(baseIdx);
+            const stationKey = makeStationKey(lineId, st.name, segmentHint);
+            const stationKana = detectStationKana(st);
+            if (interchangeLabels.length) {
+              station.classList.add("station-with-xfer");
+            }
+            if (selectedStation && selectedStation.key === stationKey) {
+              station.classList.add("station-selected");
+            }
+            if (stationKana) {
+              station.title = stationKana;
+            }
+            station.addEventListener("click", function () {
+              setSelectedStation(lineId, line, st, segmentHint);
+            });
+
+            row.appendChild(station);
+
+            if (idx < list.length - 1) {
+              const segment = document.createElement("span");
+              segment.className = "segment";
+              const topTrack = document.createElement("span");
+              topTrack.className = "seg-track top";
+              const bottomTrack = document.createElement("span");
+              bottomTrack.className = "seg-track bottom";
+              segment.appendChild(topTrack);
+              segment.appendChild(bottomTrack);
+              row.appendChild(segment);
+            }
+          });
+
+          branchPreview.appendChild(row);
+        }
+
+        appendRow("main", mainStations, 0, 0);
+        appendRow("branch", branchStations, branchStart, branchJunctionIndex);
+        stations.appendChild(branchPreview);
+      } else if (!line.stations.length) {
         const note = document.createElement("span");
         note.className = "station";
         note.textContent = "駅データ未設定";
@@ -1282,6 +1407,7 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
         const isLoopLine = isLoopLineName(line.lineName);
         loopForScrollRestore = isLoopLine;
         const baseStations = line.stations;
+        const useSegmentHint = hasDuplicateStationTokens(baseStations);
         const loopDisplayLaps = isLoopLine ? 3 : 1;
         const displayStations = [];
         for (let lap = 0; lap < loopDisplayLaps; lap += 1) {
@@ -1320,7 +1446,10 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
           station.appendChild(stationName);
 
           const interchangeLabels = collectInterchangeLabels(st);
-          const stationKey = makeStationKey(lineId, st.name);
+          const segmentHint = (useSegmentHint && !isLoopLine && typeof entry.baseIdx === "number")
+            ? String(entry.baseIdx)
+            : "";
+          const stationKey = makeStationKey(lineId, st.name, segmentHint);
           const stationKana = detectStationKana(st);
           if (interchangeLabels.length) {
             station.classList.add("station-with-xfer");
@@ -1332,11 +1461,21 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
             station.title = stationKana;
           }
           station.addEventListener("click", function () {
-            setSelectedStation(lineId, line, st);
+            setSelectedStation(lineId, line, st, segmentHint);
           });
 
           stations.appendChild(station);
           if (displayIdx < displayStations.length - 1) {
+            const showBranchBreak = shouldInsertBranchBreak(baseStations, entry.baseIdx, isLoopLine);
+            if (showBranchBreak) {
+              const br = document.createElement("span");
+              br.className = "segment-break";
+              br.textContent = "支線";
+              br.title = "支線分岐";
+              stations.appendChild(br);
+              return;
+            }
+
             const segment = document.createElement("span");
             segment.className = "segment";
             if (isLoopLine && entry.baseIdx === baseStations.length - 1) {
@@ -1663,14 +1802,88 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
     });
   }
 
+  function shouldInsertBranchBreak(baseStations, baseIdx, isLoopLine) {
+    if (isLoopLine || !Array.isArray(baseStations)) {
+      return false;
+    }
+    if (typeof baseIdx !== "number" || baseIdx < 0 || baseIdx >= baseStations.length - 1) {
+      return false;
+    }
+    const nextToken = normalizeStationToken(baseStations[baseIdx + 1] && baseStations[baseIdx + 1].name);
+    if (!nextToken) {
+      return false;
+    }
+    for (let i = 0; i <= baseIdx; i += 1) {
+      const token = normalizeStationToken(baseStations[i] && baseStations[i].name);
+      if (token && token === nextToken) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function hasDuplicateStationTokens(stations) {
+    const seen = {};
+    const list = Array.isArray(stations) ? stations : [];
+    for (let i = 0; i < list.length; i += 1) {
+      const token = normalizeStationToken(list[i] && list[i].name);
+      if (!token) {
+        continue;
+      }
+      if (seen[token]) {
+        return true;
+      }
+      seen[token] = true;
+    }
+    return false;
+  }
+
+  function resolveBranchLayout(line) {
+    if (!line) {
+      return null;
+    }
+    const stations = Array.isArray(line.stations) ? line.stations : [];
+    if (stations.length < 3) {
+      return null;
+    }
+    if (line.branchLayout && Number.isInteger(line.branchLayout.junctionIndex) && Number.isInteger(line.branchLayout.branchStartIndex)) {
+      const junctionIndex = line.branchLayout.junctionIndex;
+      const branchStartIndex = line.branchLayout.branchStartIndex;
+      if (junctionIndex >= 0 && branchStartIndex > junctionIndex && branchStartIndex < stations.length) {
+        return { junctionIndex: junctionIndex, branchStartIndex: branchStartIndex };
+      }
+    }
+
+    const seenTokenIndex = {};
+    for (let i = 0; i < stations.length; i += 1) {
+      const tok = normalizeStationToken(stations[i] && stations[i].name);
+      if (!tok) {
+        continue;
+      }
+      if (typeof seenTokenIndex[tok] === "number") {
+        const junctionIndex = seenTokenIndex[tok];
+        const branchStartIndex = i;
+        if (junctionIndex >= 0 && branchStartIndex > junctionIndex) {
+          return { junctionIndex: junctionIndex, branchStartIndex: branchStartIndex };
+        }
+        break;
+      }
+      seenTokenIndex[tok] = i;
+    }
+    return null;
+  }
+
   function buildAffectedSegments(stations, ranges, isLoopLine, directionMode) {
     const affected = {};
     const count = Array.isArray(stations) ? stations.length : 0;
     const loopEnabled = !!isLoopLine && count >= 2;
 
     (ranges || []).forEach(function (r) {
-      const fromIdx = findStationIndex(stations, r.from);
-      const toIdx = findStationIndex(stations, r.to);
+      const fromIdxs = findStationIndexes(stations, r.from);
+      const toIdxs = findStationIndexes(stations, r.to);
+      const pair = chooseSegmentPair(fromIdxs, toIdxs, loopEnabled, stations.length, directionMode);
+      const fromIdx = pair.from;
+      const toIdx = pair.to;
       if (fromIdx < 0 || toIdx < 0 || fromIdx === toIdx) {
         return;
       }
@@ -1701,6 +1914,56 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
     return affected;
   }
 
+  function chooseSegmentPair(fromIdxs, toIdxs, loopEnabled, stationCount, directionMode) {
+    const out = { from: -1, to: -1 };
+    const fromList = Array.isArray(fromIdxs) ? fromIdxs : [];
+    const toList = Array.isArray(toIdxs) ? toIdxs : [];
+    if (!fromList.length || !toList.length) {
+      return out;
+    }
+    if (!loopEnabled) {
+      let bestDist = Infinity;
+      fromList.forEach(function (f) {
+        toList.forEach(function (t) {
+          if (f === t) {
+            return;
+          }
+          const d = Math.abs(f - t);
+          if (d < bestDist) {
+            bestDist = d;
+            out.from = f;
+            out.to = t;
+          }
+        });
+      });
+      return out;
+    }
+
+    let best = null;
+    fromList.forEach(function (f) {
+      toList.forEach(function (t) {
+        if (f === t) {
+          return;
+        }
+        const forwardLen = loopSegmentPath(stationCount, f, t, true).length;
+        const backwardLen = loopSegmentPath(stationCount, f, t, false).length;
+        const score = directionMode === "down"
+          ? forwardLen
+          : directionMode === "up"
+            ? backwardLen
+            : Math.min(forwardLen, backwardLen);
+        if (!best || score < best.score) {
+          best = { from: f, to: t, score: score };
+        }
+      });
+    });
+    if (best) {
+      out.from = best.from;
+      out.to = best.to;
+    }
+    return out;
+  }
+
   function loopSegmentPath(stationCount, fromIdx, toIdx, forward) {
     const segments = [];
     let cur = fromIdx;
@@ -1717,13 +1980,14 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
     return segments;
   }
 
-  function findStationIndex(stations, stationName) {
+  function findStationIndexes(stations, stationName) {
+    const out = [];
     for (let i = 0; i < stations.length; i += 1) {
       if (normalizeStationToken(stations[i].name) === normalizeStationToken(stationName)) {
-        return i;
+        out.push(i);
       }
     }
-    return -1;
+    return out;
   }
 
   function applyTrackActivation(topTrack, bottomTrack, mode, statusClass) {

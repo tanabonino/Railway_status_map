@@ -1,19 +1,6 @@
-// 路線別メタデータ: 上越線（信越/高崎・越後湯沢側）
+// 路線別メタデータ: 上越線（信越/水上〜宮内）
 window.stationMetadataChunks = window.stationMetadataChunks || {};
 Object.assign(window.stationMetadataChunks, {
-  "高崎": {"nameKana":"たかさき","interchanges":[{"toOperator":"JR東日本","toLine":"高崎線"},{"toOperator":"JR東日本","toLine":"信越本線"},{"toOperator":"JR東日本","toLine":"八高線"},{"toOperator":"JR東日本","toLine":"上越新幹線"},{"toOperator":"JR東日本","toLine":"北陸新幹線"}]},
-  "高崎問屋町": {"nameKana":"たかさきとんやまち"},
-  "井野": {"nameKana":"いの"},
-  "新前橋": {"nameKana":"しんまえばし","interchanges":[{"toOperator":"JR東日本","toLine":"両毛線"}]},
-  "群馬総社": {"nameKana":"ぐんまそうじゃ"},
-  "八木原": {"nameKana":"やぎはら"},
-  "渋川": {"nameKana":"しぶかわ","interchanges":[{"toOperator":"JR東日本","toLine":"吾妻線"}]},
-  "敷島": {"nameKana":"しきしま"},
-  "津久田": {"nameKana":"つくだ"},
-  "岩本": {"nameKana":"いわもと"},
-  "沼田": {"nameKana":"ぬまた"},
-  "後閑": {"nameKana":"ごかん"},
-  "上牧": {"nameKana":"かみもく"},
   "水上": {"nameKana":"みなかみ"},
   "湯檜曽": {"nameKana":"ゆびそ"},
   "土合": {"nameKana":"どあい"},
@@ -35,5 +22,5 @@ Object.assign(window.stationMetadataChunks, {
   "越後川口": {"nameKana":"えちごかわぐち","interchanges":[{"toOperator":"JR東日本","toLine":"飯山線"}]},
   "小千谷": {"nameKana":"おぢや"},
   "越後滝谷": {"nameKana":"えちごたきや"},
-  "宮内": {"nameKana":"みやうち","interchanges":[{"toOperator":"JR東日本","toLine":"信越本線"}]},
+  "宮内": {"nameKana":"みやうち","interchanges":[{"toOperator":"JR東日本","toLine":"信越本線"}]}
 });

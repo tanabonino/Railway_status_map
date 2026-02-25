@@ -526,6 +526,59 @@
       scrollbar-color: #8fa799 #dfe8e1;
       contain: content;
     }
+    .stations-branch-preview {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      flex: 0 0 auto;
+      width: auto;
+      min-width: max-content;
+      overflow: visible;
+    }
+    .stations.stations-branch-host {
+      display: block;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-gutter: stable both-edges;
+    }
+    .stations-branch-row {
+      display: flex !important;
+      flex-wrap: nowrap !important;
+      gap: 10px;
+      align-items: center;
+      white-space: nowrap;
+      width: max-content;
+      flex: 0 0 auto;
+      padding: 6px 4px;
+    }
+    .stations-branch-row.row-main {
+      border-bottom: 1px dashed #b7cdbf;
+    }
+    .stations-branch-head {
+      flex: 0 0 auto;
+      min-width: 40px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #2f5b43;
+      background: #e9f5ed;
+      border: 1px solid #c6ddce;
+      text-align: center;
+      user-select: none;
+    }
+    .branch-connector {
+      flex: 0 0 auto;
+      width: 20px;
+      text-align: center;
+      color: #2f5b43;
+      font-weight: 800;
+      font-size: 16px;
+      line-height: 1;
+      user-select: none;
+    }
 
     .stations::-webkit-scrollbar {
       height: 8px;
@@ -555,6 +608,10 @@
       background: #ffffff;
       white-space: nowrap;
       min-width: 84px;
+    }
+    .station-ghost {
+      visibility: hidden;
+      pointer-events: none;
     }
     .stations .station {
       position: relative;
@@ -699,6 +756,24 @@
       display: inline-flex;
       flex-direction: column;
       gap: 2px;
+    }
+    .segment-ghost {
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .segment-break {
+      flex: 0 0 auto;
+      min-width: 44px;
+      padding: 2px 8px;
+      border: 1px dashed #8da99a;
+      border-radius: 999px;
+      background: #eef7f1;
+      color: #2f5b43;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.2;
+      text-align: center;
+      user-select: none;
     }
     .segment-loop-close {
       border: 1px dashed #9dbfaa;
@@ -1104,6 +1179,17 @@
       background: #fff2f9;
       scrollbar-color: #f19cc4 #ffe5f2;
     }
+    body.theme-cute .stations-branch-row.row-main {
+      border-bottom-color: #ffcade;
+    }
+    body.theme-cute .stations-branch-head {
+      background: #fff0f8;
+      border-color: #ffc9df;
+      color: #9b3e66;
+    }
+    body.theme-cute .branch-connector {
+      color: #9b3e66;
+    }
 
     body.theme-cute .stations::-webkit-scrollbar-track {
       background: #ffe5f2;
@@ -1174,6 +1260,11 @@
     body.theme-cute .segment-loop-close {
       border-color: #ffbfda;
       background: #fff4fa;
+    }
+    body.theme-cute .segment-break {
+      border-color: #ffbfda;
+      background: #fff4fa;
+      color: #9b3e66;
     }
 
     body.theme-cute .seg-track {
@@ -1312,6 +1403,7 @@
     body.theme-standard .dir-filter-btn.active {
       background: var(--accent);
       border-color: var(--accent);
+      color: #ffffff;
       box-shadow: none;
     }
 
@@ -1344,6 +1436,11 @@
       border-color: #9dbfaa;
       border-radius: 10px;
       background: rgba(230, 245, 235, 0.7);
+    }
+    body.theme-standard .segment-break {
+      border-color: #9dbfaa;
+      background: #eef7f1;
+      color: #2f5b43;
     }
 
     body.theme-standard .meta {
@@ -1379,6 +1476,17 @@
       border-radius: 10px;
       background: #f5fbf7;
       scrollbar-color: #8fa799 #dfe8e1;
+    }
+    body.theme-standard .stations-branch-row.row-main {
+      border-bottom-color: #b7cdbf;
+    }
+    body.theme-standard .stations-branch-head {
+      background: #e9f5ed;
+      border-color: #c6ddce;
+      color: #2f5b43;
+    }
+    body.theme-standard .branch-connector {
+      color: #2f5b43;
     }
 
     body.theme-standard .stations::-webkit-scrollbar-track {
