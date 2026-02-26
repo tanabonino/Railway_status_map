@@ -12,7 +12,7 @@ Object.assign(window.stationMetadataChunks, {
   "市川塩浜": { nameKana: "いちかわしおはま" },
   "西船橋": { nameKana: "にしふなばし", interchanges: [{ toOperator: "JR東日本", toLine: "武蔵野線" }, { toOperator: "JR東日本", toLine: "総武線（各駅停車）" }, { toOperator: "東京メトロ", toLine: "東西線" }, { toOperator: "東葉高速鉄道", toLine: "東葉高速線" }] },
   "二俣新町": { nameKana: "ふたまたしんまち" },
-  "南船橋": { nameKana: "みなみふなばし", interchanges: [{ toOperator: "京葉線", toLine: "支線分岐" }] },
+  "南船橋": { nameKana: "みなみふなばし" },
   "新習志野": { nameKana: "しんならしの" },
   "幕張豊砂": { nameKana: "まくはりとよすな" },
   "海浜幕張": { nameKana: "かいひんまくはり" },

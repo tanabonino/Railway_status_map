@@ -571,13 +571,73 @@
     }
     .branch-connector {
       flex: 0 0 auto;
-      width: 20px;
-      text-align: center;
+      width: 44px;
+      height: 20px;
+      display: inline-flex;
+      align-items: center;
       color: #2f5b43;
-      font-weight: 800;
-      font-size: 16px;
-      line-height: 1;
       user-select: none;
+    }
+    .branch-svg {
+      width: 44px;
+      height: 20px;
+      overflow: visible;
+    }
+    .branch-line {
+      stroke: #c4d8cb;
+      stroke-width: 6;
+      stroke-linecap: round;
+    }
+    .branch-line.active.status-normal { stroke: #008a4a; }
+    .branch-line.active.status-delay { stroke: #ca8a04; }
+    .branch-line.active.status-suspend { stroke: #9f1239; }
+    .branch-line.active.status-stop { stroke: #b91c1c; }
+    .branch-line.active.status-unknown { stroke: #f59e0b; }
+    .branch-line.active.flow-right,
+    .branch-line.active.flow-left {
+      stroke-dasharray: 9 7;
+      animation-duration: 1.1s;
+      animation-iteration-count: infinite;
+      animation-timing-function: linear;
+    }
+    .branch-line.active.flow-right { animation-name: branchFlowRight; }
+    .branch-line.active.flow-left { animation-name: branchFlowLeft; }
+    .branch-line.active.flow-pulse {
+      animation: branchPulse 1.1s ease-in-out infinite;
+    }
+    body.anim-line .branch-line.active.flow-right,
+    body.anim-line .branch-line.active.flow-left {
+      stroke-dasharray: none;
+      animation: branchPulse 1.1s ease-in-out infinite;
+    }
+    body.anim-dash .seg-track.active::after,
+    body.anim-dash .seg-track.active::before {
+      display: none;
+    }
+    body.anim-dash .seg-track.active {
+      background: transparent;
+      border-width: 2px;
+      border-style: dashed;
+    }
+    body.anim-dash .seg-track.active.status-normal { border-color: #008a4a; }
+    body.anim-dash .seg-track.active.status-delay { border-color: #ca8a04; }
+    body.anim-dash .seg-track.active.status-suspend { border-color: #9f1239; }
+    body.anim-dash .seg-track.active.status-stop { border-color: #b91c1c; }
+    body.anim-dash .seg-track.active.status-unknown { border-color: #f59e0b; }
+    @keyframes branchFlowRight {
+      from { stroke-dashoffset: 0; }
+      to { stroke-dashoffset: -16; }
+    }
+    @keyframes branchFlowLeft {
+      from { stroke-dashoffset: 0; }
+      to { stroke-dashoffset: 16; }
+    }
+    @keyframes branchPulse {
+      0%,100% { opacity: 1; }
+      50% { opacity: 0.45; }
+    }
+    .branch-anchor-ghost {
+      pointer-events: none;
     }
 
     .stations::-webkit-scrollbar {
@@ -1625,6 +1685,13 @@
         <input id="debugForceSegments" type="checkbox" style="width:auto;" />
         デバッグ: 全駅間ラインを強制表示（アニメ確認）
       </label>
+      <label class="hint" style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+        アニメーション方式:
+        <select id="animStyle" style="width:auto;">
+          <option value="line">本線風</option>
+          <option value="dash">支線風</option>
+        </select>
+      </label>
 
       <div class="sub-title">手動設定（補助）</div>
       <div class="stack">
@@ -1645,6 +1712,7 @@
         <input id="manualCause" placeholder="原因（例: 線路支障物）" />
         <input id="manualResume" placeholder="再開見込み（例: 未定）" />
         <button id="manualApply" class="secondary">手動で反映</button>
+        <button id="clearAllStatus" class="secondary">全運行情報をクリア</button>
       </div>
     </aside>
 

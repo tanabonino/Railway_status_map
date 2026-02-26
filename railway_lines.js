@@ -292,7 +292,9 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
     manualCause: document.getElementById("manualCause"),
     manualResume: document.getElementById("manualResume"),
     manualApply: document.getElementById("manualApply"),
+    clearAllStatus: document.getElementById("clearAllStatus"),
     debugForceSegments: document.getElementById("debugForceSegments"),
+    animStyle: document.getElementById("animStyle"),
     stationDetail: document.getElementById("stationDetail")
   };
 
@@ -302,6 +304,7 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
     refreshManualLineOptions();
     setupDirectionFilters();
     loadState();
+    applyAnimationStyle(loadAnimationStyle());
     render();
 
     ui.parseBtn.addEventListener("click", handleParse);
@@ -339,11 +342,64 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
       target.resume = ui.manualResume.value.trim();
       target.updatedAt = nowLabel();
       target.isCleared = false;
+      addLineNotice(target, {
+        status: target.status,
+        directionMode: target.directionMode,
+        directionUpLabel: target.directionUpLabel,
+        directionDownLabel: target.directionDownLabel,
+        section: target.section,
+        sectionRanges: target.sectionRanges,
+        cause: target.cause,
+        resume: target.resume,
+        sourceText: "手動設定",
+        updatedAt: target.updatedAt
+      });
+      syncLineStateFromNotices(target);
 
       persistState();
       render();
       ui.parseResult.textContent = "手動設定を反映しました: " + displayName(lineId);
     });
+
+    if (ui.clearAllStatus) {
+      ui.clearAllStatus.addEventListener("click", function () {
+        Object.keys(railwayLinesData).forEach(function (lineId) {
+          clearLineState(lineId);
+        });
+        persistState();
+        render();
+        ui.parseResult.textContent = "全路線の運行情報をクリアしました";
+      });
+    }
+
+    if (ui.animStyle) {
+      ui.animStyle.value = loadAnimationStyle();
+      ui.animStyle.addEventListener("change", function () {
+        applyAnimationStyle(ui.animStyle.value);
+      });
+    }
+  }
+
+  function loadAnimationStyle() {
+    try {
+      const v = localStorage.getItem("animationStyle");
+      if (v === "line" || v === "dash") {
+        return v;
+      }
+    } catch (_) {}
+    return "line";
+  }
+
+  function applyAnimationStyle(style) {
+    const normalized = (style === "dash") ? "dash" : "line";
+    document.body.classList.remove("anim-line", "anim-dash");
+    document.body.classList.add("anim-" + normalized);
+    try {
+      localStorage.setItem("animationStyle", normalized);
+    } catch (_) {}
+    if (ui.animStyle && ui.animStyle.value !== normalized) {
+      ui.animStyle.value = normalized;
+    }
   }
 
   function loadDirectionFilter() {
@@ -617,8 +673,109 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
       resume: "",
       sourceText: "",
       updatedAt: "",
-      isCleared: false
+      isCleared: false,
+      notices: []
     };
+  }
+
+  function defaultNotice() {
+    return {
+      status: "normal",
+      directionMode: "unknown",
+      directionUpLabel: "上り",
+      directionDownLabel: "下り",
+      section: "",
+      sectionRanges: [],
+      cause: "",
+      resume: "",
+      sourceText: "",
+      updatedAt: ""
+    };
+  }
+
+  function normalizeLineState(rawState) {
+    const merged = Object.assign({}, defaultLineState(), rawState || {});
+    let notices = Array.isArray(merged.notices) ? merged.notices : [];
+    notices = notices.map(function (n) {
+      return Object.assign({}, defaultNotice(), n || {});
+    });
+    if (!notices.length) {
+      const legacyHasData = merged.updatedAt || merged.sourceText || merged.section || merged.cause || merged.resume || merged.status !== "normal";
+      if (legacyHasData && !merged.isCleared) {
+        notices = [Object.assign({}, defaultNotice(), {
+          status: merged.status,
+          directionMode: merged.directionMode,
+          directionUpLabel: merged.directionUpLabel,
+          directionDownLabel: merged.directionDownLabel,
+          section: merged.section,
+          sectionRanges: Array.isArray(merged.sectionRanges) ? merged.sectionRanges : [],
+          cause: merged.cause,
+          resume: merged.resume,
+          sourceText: merged.sourceText,
+          updatedAt: merged.updatedAt
+        })];
+      }
+    }
+    merged.notices = notices;
+    syncLineStateFromNotices(merged);
+    return merged;
+  }
+
+  function addLineNotice(lineState, notice) {
+    const n = Object.assign({}, defaultNotice(), notice || {});
+    lineState.notices = Array.isArray(lineState.notices) ? lineState.notices : [];
+    lineState.notices.unshift(n);
+    if (lineState.notices.length > 30) {
+      lineState.notices = lineState.notices.slice(0, 30);
+    }
+    lineState.isCleared = false;
+  }
+
+  function getLineNotices(lineState) {
+    return Array.isArray(lineState && lineState.notices) ? lineState.notices : [];
+  }
+
+  function noticeTimestamp(n) {
+    const d = parseUpdatedAt(n && n.updatedAt);
+    return d && !Number.isNaN(d.getTime()) ? d.getTime() : 0;
+  }
+
+  function statusPriority(status) {
+    if (status === "stop") return 4;
+    if (status === "suspend") return 3;
+    if (status === "delay") return 2;
+    if (status === "normal") return 1;
+    return 0;
+  }
+
+  function syncLineStateFromNotices(lineState) {
+    const notices = getLineNotices(lineState);
+    if (!notices.length) {
+      const base = defaultNotice();
+      lineState.status = base.status;
+      lineState.directionMode = base.directionMode;
+      lineState.directionUpLabel = base.directionUpLabel;
+      lineState.directionDownLabel = base.directionDownLabel;
+      lineState.section = base.section;
+      lineState.sectionRanges = base.sectionRanges;
+      lineState.cause = base.cause;
+      lineState.resume = base.resume;
+      lineState.sourceText = base.sourceText;
+      return;
+    }
+    const latest = notices.slice().sort(function (a, b) {
+      return noticeTimestamp(b) - noticeTimestamp(a);
+    })[0];
+    lineState.status = latest.status;
+    lineState.directionMode = latest.directionMode;
+    lineState.directionUpLabel = latest.directionUpLabel;
+    lineState.directionDownLabel = latest.directionDownLabel;
+    lineState.section = latest.section;
+    lineState.sectionRanges = latest.sectionRanges;
+    lineState.cause = latest.cause;
+    lineState.resume = latest.resume;
+    lineState.sourceText = latest.sourceText;
+    lineState.updatedAt = latest.updatedAt || lineState.updatedAt;
   }
 
   function ensureLine(lineId, area, lineName, scope) {
@@ -667,7 +824,7 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
           return;
         }
         ensureLine(lineId);
-        state[lineId] = Object.assign({}, defaultLineState(), loaded[lineId]);
+        state[lineId] = normalizeLineState(loaded[lineId]);
       });
     } catch (_) {
       // localStorage が使えない環境でも動作継続
@@ -709,17 +866,20 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
       ensureLine(lineId, line.area || parsed.area, line.lineName || parsed.lineName, line.scope || parsed.scope);
 
       const target = state[lineId];
-      target.status = parsed.status;
-      target.directionMode = parsed.directionMode;
-      target.directionUpLabel = parsed.directionUpLabel;
-      target.directionDownLabel = parsed.directionDownLabel;
-      target.section = parsed.section;
-      target.sectionRanges = parsed.sectionRanges;
-      target.cause = parsed.cause;
-      target.resume = parsed.resume;
-      target.sourceText = text;
+      addLineNotice(target, {
+        status: parsed.status,
+        directionMode: parsed.directionMode,
+        directionUpLabel: parsed.directionUpLabel,
+        directionDownLabel: parsed.directionDownLabel,
+        section: parsed.section,
+        sectionRanges: parsed.sectionRanges,
+        cause: parsed.cause,
+        resume: parsed.resume,
+        sourceText: text,
+        updatedAt: now
+      });
       target.updatedAt = now;
-      target.isCleared = false;
+      syncLineStateFromNotices(target);
     });
 
     persistState();
@@ -1193,6 +1353,121 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
     return "";
   }
 
+  function mergeDirectionMode(a, b) {
+    const ma = a || "unknown";
+    const mb = b || "unknown";
+    if (ma === "both" || mb === "both") return "both";
+    if ((ma === "up" && mb === "down") || (ma === "down" && mb === "up")) return "both";
+    if (ma === "unknown") return mb;
+    if (mb === "unknown") return ma;
+    return ma;
+  }
+
+  function mergeSegmentEffect(existing, notice) {
+    const nextStatus = normalizeStatus(notice.status);
+    const nextMode = notice.directionMode || "unknown";
+    const nextTime = noticeTimestamp(notice);
+    if (!existing) {
+      return {
+        status: nextStatus,
+        mode: nextMode,
+        ts: nextTime
+      };
+    }
+    const curTime = Number(existing.ts) || 0;
+    if (nextTime > curTime) {
+      return {
+        status: nextStatus,
+        mode: nextMode,
+        ts: nextTime
+      };
+    }
+    if (nextTime < curTime) {
+      return existing;
+    }
+    const curRank = statusPriority(existing.status);
+    const nextRank = statusPriority(nextStatus);
+    if (nextRank > curRank) {
+      return {
+        status: nextStatus,
+        mode: nextMode,
+        ts: nextTime
+      };
+    }
+    if (nextRank < curRank) {
+      return existing;
+    }
+    return {
+      status: existing.status,
+      mode: mergeDirectionMode(existing.mode, nextMode),
+      ts: curTime
+    };
+  }
+
+  function buildSegmentEffects(stations, notices, isLoopLine) {
+    const effects = {};
+    const list = Array.isArray(notices) ? notices : [];
+    const stationCount = Array.isArray(stations) ? stations.length : 0;
+    if (!stationCount || !list.length) {
+      return effects;
+    }
+    const segmentCount = isLoopLine ? stationCount : Math.max(0, stationCount - 1);
+    list.forEach(function (n) {
+      const ranges = Array.isArray(n.sectionRanges) && n.sectionRanges.length
+        ? n.sectionRanges
+        : rangesFromSectionText(n.section);
+      const affectedMap = buildAffectedSegments(stations, ranges, isLoopLine, n.directionMode || "unknown");
+      const wholeLineByStatus = (!ranges.length && !cleanText(n.section) && (n.status === "suspend" || n.status === "stop"));
+      if (wholeLineByStatus) {
+        for (let i = 0; i < segmentCount; i += 1) {
+          affectedMap[i] = true;
+        }
+      }
+      Object.keys(affectedMap).forEach(function (k) {
+        if (!affectedMap[k]) {
+          return;
+        }
+        const idx = Number(k);
+        if (!Number.isInteger(idx) || idx < 0 || idx >= segmentCount) {
+          return;
+        }
+        effects[idx] = mergeSegmentEffect(effects[idx], n);
+      });
+    });
+    return effects;
+  }
+
+  function pickSummaryNotice(notices) {
+    const list = Array.isArray(notices) ? notices.slice() : [];
+    if (!list.length) {
+      return defaultNotice();
+    }
+    list.sort(function (a, b) {
+      const timeDiff = noticeTimestamp(b) - noticeTimestamp(a);
+      if (timeDiff !== 0) {
+        return timeDiff;
+      }
+      return statusPriority(b.status) - statusPriority(a.status);
+    });
+    return Object.assign({}, defaultNotice(), list[0]);
+  }
+
+  function buildSourceTextSummary(notices) {
+    const list = Array.isArray(notices) ? notices : [];
+    if (!list.length) {
+      return "---";
+    }
+    const rows = list.slice(0, 3).map(function (n) {
+      const meta = statusMeta[normalizeStatus(n.status)] || statusMeta.normal;
+      const src = cleanText(n.sourceText) || "（手動設定）";
+      return "[" + meta.label + "] " + src;
+    });
+    if (list.length > 3) {
+      rows.push("...他 " + (list.length - 3) + " 件");
+    }
+    return rows.join("\n");
+  }
+
   function render() {
     const previousScrollByLine = captureStationScrollPositions();
     ui.cards.innerHTML = "";
@@ -1222,12 +1497,14 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
         return;
       }
       const s = state[lineId];
-      const meta = statusMeta[s.status] || statusMeta.normal;
+      const notices = getLineNotices(s);
+      const summary = pickSummaryNotice(notices);
+      const meta = statusMeta[normalizeStatus(summary.status)] || statusMeta.normal;
 
       const card = document.createElement("section");
       card.className = "card";
 
-      const ageMin = getUpdatedAgeMinutes(s.updatedAt);
+      const ageMin = getUpdatedAgeMinutes(summary.updatedAt || s.updatedAt);
       const isStale = ageMin !== null && ageMin >= STALE_MINUTES;
       if (isStale) {
         card.classList.add("card-stale");
@@ -1255,7 +1532,7 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
 
       const readAt = document.createElement("span");
       readAt.className = "read-at";
-      readAt.textContent = "データ読込時刻: " + (s.updatedAt || "未更新");
+      readAt.textContent = "データ読込時刻: " + (summary.updatedAt || s.updatedAt || "未更新");
 
       headMain.appendChild(title);
       headMain.appendChild(areaChip);
@@ -1282,15 +1559,16 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
 
       const metaBlock = document.createElement("div");
       metaBlock.className = "meta";
-      const sourceText = escapeHtml((s.sourceText || "---")).replace(/\n/g, "<br>");
+      const sourceText = escapeHtml(buildSourceTextSummary(notices)).replace(/\n/g, "<br>");
       metaBlock.innerHTML = [
         "<div class=\"meta-grid\">",
         "  <div class=\"meta-main\">",
         "    <span class=\"direction-basis\">" + escapeHtml(directionBasisText(line.lineName)) + "</span><br>",
-        "    方向: " + escapeHtml(displayDirectionForCard(s)) + "<br>",
-        "    区間: " + escapeHtml(displayFieldForCard(s, s.section, "全線/未設定")) + "<br>",
-        "    原因: " + escapeHtml(displayFieldForCard(s, s.cause, "未設定")) + "<br>",
-        "    再開見込み: " + escapeHtml(displayFieldForCard(s, s.resume, "未設定")) + "<br>",
+        "    方向: " + escapeHtml(displayDirectionForCard(summary)) + "<br>",
+        "    区間: " + escapeHtml(displayFieldForCard(summary, summary.section, "全線/未設定")) + "<br>",
+        "    原因: " + escapeHtml(displayFieldForCard(summary, summary.cause, "未設定")) + "<br>",
+        "    再開見込み: " + escapeHtml(displayFieldForCard(summary, summary.resume, "未設定")) + "<br>",
+        "    登録件数: " + String(notices.length) + " 件<br>",
         (isStale ? "<span class=\"stale-alert\">データ読込から " + ageMin + " 分経過（再確認推奨）</span>" : ""),
         "  </div>",
         "  <div class=\"meta-source\">",
@@ -1312,10 +1590,21 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
         const branchPreview = document.createElement("div");
         branchPreview.className = "stations-branch-preview";
         const baseStations = line.stations;
+        const segmentEffects = buildSegmentEffects(baseStations, notices, false);
         const branchStart = branchLayout.branchStartIndex;
         const branchJunctionIndex = branchLayout.junctionIndex;
         const mainStations = baseStations.slice(0, branchStart);
-        const branchStations = baseStations.slice(branchStart);
+        const branchStationsRaw = baseStations.slice(branchStart);
+        const branchCollapsedDuplicateBase = (
+          branchStationsRaw.length >= 2 &&
+          normalizeStationToken(branchStationsRaw[0] && branchStationsRaw[0].name) ===
+            normalizeStationToken(baseStations[branchJunctionIndex] && baseStations[branchJunctionIndex].name)
+        );
+        const branchCollapsedDuplicate = branchCollapsedDuplicateBase;
+        const branchStations = branchCollapsedDuplicate ? branchStationsRaw.slice(1) : branchStationsRaw;
+        const branchStationStartIndex = branchCollapsedDuplicate ? branchStart + 1 : branchStart;
+        const branchOffsetStationCount = branchJunctionIndex + (branchCollapsedDuplicate ? 1 : 0);
+        const showBranchPrefixDummies = lineId === "kanto:keiyo";
 
         function appendRow(rowType, list, startIndex, offsetStationCount) {
           if (!list.length) {
@@ -1329,7 +1618,7 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
           head.textContent = rowType === "main" ? "本線" : "支線";
           row.appendChild(head);
 
-          const offset = Math.max(0, Number(offsetStationCount) || 0);
+          const offset = showBranchPrefixDummies ? 0 : Math.max(0, Number(offsetStationCount) || 0);
           if (offset > 0) {
             for (let i = 0; i < offset; i += 1) {
               const ghostStation = document.createElement("span");
@@ -1342,12 +1631,87 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
               row.appendChild(ghostSegment);
             }
           }
-          if (rowType === "branch") {
+          function createBranchJoinSegment() {
             const join = document.createElement("span");
-            join.className = "branch-connector";
-            join.textContent = "└";
-            join.title = "上菅谷から支線分岐";
-            row.appendChild(join);
+            join.className = "segment branch-connector";
+            const junctionStation = baseStations[branchJunctionIndex] && baseStations[branchJunctionIndex].name;
+            const svgNS = "http://www.w3.org/2000/svg";
+            const svg = document.createElementNS(svgNS, "svg");
+            svg.setAttribute("viewBox", "0 0 44 20");
+            svg.setAttribute("preserveAspectRatio", "none");
+            svg.classList.add("branch-svg");
+            const lineStemA = document.createElementNS(svgNS, "line");
+            lineStemA.setAttribute("x1", "-58");
+            lineStemA.setAttribute("y1", "-8");
+            lineStemA.setAttribute("x2", "-58");
+            lineStemA.setAttribute("y2", "15");
+            lineStemA.classList.add("branch-line", "stem-a");
+            const lineStemB = document.createElementNS(svgNS, "line");
+            lineStemB.setAttribute("x1", "-48");
+            lineStemB.setAttribute("y1", "-8");
+            lineStemB.setAttribute("x2", "-48");
+            lineStemB.setAttribute("y2", "7");
+            lineStemB.classList.add("branch-line", "stem-b");
+            const lineTop = document.createElementNS(svgNS, "line");
+            lineTop.setAttribute("x1", "-48");
+            lineTop.setAttribute("y1", "7");
+            lineTop.setAttribute("x2", "44");
+            lineTop.setAttribute("y2", "7");
+            lineTop.classList.add("branch-line", "top");
+            const lineBottom = document.createElementNS(svgNS, "line");
+            lineBottom.setAttribute("x1", "-58");
+            lineBottom.setAttribute("y1", "15");
+            lineBottom.setAttribute("x2", "44");
+            lineBottom.setAttribute("y2", "15");
+            lineBottom.classList.add("branch-line", "bottom");
+            svg.appendChild(lineStemA);
+            svg.appendChild(lineStemB);
+            svg.appendChild(lineTop);
+            svg.appendChild(lineBottom);
+            const joinAffectedIdx = branchStart;
+            const joinEffect = segmentEffects[joinAffectedIdx];
+            if (joinEffect) {
+              const statusClass = "status-" + normalizeStatus(joinEffect.status);
+              const mode = joinEffect.mode || "unknown";
+              applyBranchSvgActivation(lineStemA, lineStemB, lineTop, lineBottom, mode, statusClass);
+            } else if (forceSegments) {
+              applyBranchSvgActivation(lineStemA, lineStemB, lineTop, lineBottom, "both", "status-delay");
+            }
+            if (branchStationsRaw.length >= 2) {
+              join.title = branchStationsRaw[0].name + "→" + branchStationsRaw[1].name + " 区間";
+            } else if (list.length >= 1) {
+              join.title = (junctionStation || "分岐駅") + "→" + list[0].name + " 区間";
+            } else {
+              join.title = (junctionStation ? (junctionStation + "から支線分岐") : "支線分岐");
+            }
+            join.appendChild(svg);
+            return join;
+          }
+          if (rowType === "branch" && showBranchPrefixDummies) {
+            const dummyStations = baseStations.slice(0, branchJunctionIndex + 1);
+            dummyStations.forEach(function (dst, didx) {
+              const dStation = document.createElement("span");
+              dStation.className = "station station-ghost branch-anchor-ghost";
+              dStation.setAttribute("aria-hidden", "true");
+              const dName = document.createElement("span");
+              dName.className = "station-name";
+              dName.textContent = dst.name;
+              dStation.appendChild(dName);
+              row.appendChild(dStation);
+              if (didx < dummyStations.length - 1) {
+                const dSeg = document.createElement("span");
+                dSeg.className = "segment segment-ghost";
+                dSeg.setAttribute("aria-hidden", "true");
+                row.appendChild(dSeg);
+              }
+            });
+            if (list.length) {
+              row.appendChild(createBranchJoinSegment());
+            }
+          }
+          if (rowType === "branch" && !showBranchPrefixDummies && branchCollapsedDuplicate && list.length) {
+            // 先頭重複駅を非表示にしている場合は、見えている先頭駅の手前に分岐区間を描画
+            row.appendChild(createBranchJoinSegment());
           }
 
           list.forEach(function (st, idx) {
@@ -1380,15 +1744,31 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
             row.appendChild(station);
 
             if (idx < list.length - 1) {
-              const segment = document.createElement("span");
-              segment.className = "segment";
-              const topTrack = document.createElement("span");
-              topTrack.className = "seg-track top";
-              const bottomTrack = document.createElement("span");
-              bottomTrack.className = "seg-track bottom";
-              segment.appendChild(topTrack);
-              segment.appendChild(bottomTrack);
-              row.appendChild(segment);
+              if (rowType === "branch" && idx === 0 && !branchCollapsedDuplicate) {
+                // 重複駅を表示するデバッグ時は、先頭駅と次駅の間を分岐区間として描画
+                row.appendChild(createBranchJoinSegment());
+              } else {
+                const segment = document.createElement("span");
+                segment.className = "segment";
+                const topTrack = document.createElement("span");
+                topTrack.className = "seg-track top";
+                const bottomTrack = document.createElement("span");
+                bottomTrack.className = "seg-track bottom";
+                const affectedIdx = startIndex + idx;
+                const effect = segmentEffects[affectedIdx];
+                if (effect) {
+                  const statusClass = "status-" + normalizeStatus(effect.status);
+                  const mode = effect.mode || "unknown";
+                  applyTrackActivation(topTrack, bottomTrack, mode, statusClass);
+                  segment.title = directionByMode(mode, line.lineName).display + " に影響";
+                } else if (forceSegments) {
+                  applyTrackActivation(topTrack, bottomTrack, "both", "status-delay");
+                  segment.title = "デバッグ強制表示";
+                }
+                segment.appendChild(topTrack);
+                segment.appendChild(bottomTrack);
+                row.appendChild(segment);
+              }
             }
           });
 
@@ -1396,7 +1776,7 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
         }
 
         appendRow("main", mainStations, 0, 0);
-        appendRow("branch", branchStations, branchStart, branchJunctionIndex);
+        appendRow("branch", branchStations, branchStationStartIndex, branchOffsetStationCount);
         stations.appendChild(branchPreview);
       } else if (!line.stations.length) {
         const note = document.createElement("span");
@@ -1419,17 +1799,7 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
             });
           });
         }
-        const ranges = Array.isArray(s.sectionRanges) && s.sectionRanges.length
-          ? s.sectionRanges
-          : rangesFromSectionText(s.section);
-        const affectedMap = buildAffectedSegments(baseStations, ranges, isLoopLine, s.directionMode || "unknown");
-        const wholeLineByStatus = (!ranges.length && !cleanText(s.section) && (s.status === "suspend" || s.status === "stop"));
-        const segmentCount = isLoopLine ? baseStations.length : baseStations.length - 1;
-        if (wholeLineByStatus) {
-          for (let i = 0; i < segmentCount; i += 1) {
-            affectedMap[i] = true;
-          }
-        }
+        const segmentEffects = buildSegmentEffects(baseStations, notices, isLoopLine);
 
         displayStations.forEach(function (entry, displayIdx) {
           const st = entry.station;
@@ -1488,12 +1858,12 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
             const bottomTrack = document.createElement("span");
             bottomTrack.className = "seg-track bottom";
             const affectedIdx = isLoopLine ? entry.baseIdx : displayIdx;
-
-            if (affectedMap[affectedIdx]) {
-              const statusClass = "status-" + normalizeStatus(s.status);
-              const mode = s.directionMode || "unknown";
+            const effect = segmentEffects[affectedIdx];
+            if (effect) {
+              const statusClass = "status-" + normalizeStatus(effect.status);
+              const mode = effect.mode || "unknown";
               applyTrackActivation(topTrack, bottomTrack, mode, statusClass);
-              segment.title = directionDisplayFromState(s) + " に影響";
+              segment.title = directionByMode(mode, line.lineName).display + " に影響";
             } else if (forceSegments) {
               applyTrackActivation(topTrack, bottomTrack, "both", "status-delay");
               segment.title = "デバッグ強制表示";
@@ -2006,6 +2376,62 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
     }
     activateTrack(topTrack, statusClass, "flow-pulse");
     activateTrack(bottomTrack, statusClass, "flow-pulse");
+  }
+
+  function applyBranchConnectorActivation(stemA, stemB, topTrack, bottomTrack, mode, statusClass) {
+    if (mode === "both") {
+      activateTrack(stemA, statusClass, "flow-pulse");
+      activateTrack(stemB, statusClass, "flow-pulse");
+      activateTrack(topTrack, statusClass, "flow-left");
+      activateTrack(bottomTrack, statusClass, "flow-right");
+      return;
+    }
+    if (mode === "up") {
+      // B -> C
+      activateTrack(stemB, statusClass, "flow-pulse");
+      activateTrack(topTrack, statusClass, "flow-left");
+      return;
+    }
+    if (mode === "down") {
+      // A -> D
+      activateTrack(stemA, statusClass, "flow-pulse");
+      activateTrack(bottomTrack, statusClass, "flow-right");
+      return;
+    }
+    activateTrack(stemA, statusClass, "flow-pulse");
+    activateTrack(stemB, statusClass, "flow-pulse");
+    activateTrack(topTrack, statusClass, "flow-pulse");
+    activateTrack(bottomTrack, statusClass, "flow-pulse");
+  }
+
+  function activateBranchSvgLine(lineEl, statusClass, flowClass) {
+    lineEl.classList.add("active");
+    lineEl.classList.add(statusClass);
+    lineEl.classList.add(flowClass);
+  }
+
+  function applyBranchSvgActivation(stemA, stemB, topLine, bottomLine, mode, statusClass) {
+    if (mode === "both") {
+      activateBranchSvgLine(stemA, statusClass, "flow-pulse");
+      activateBranchSvgLine(stemB, statusClass, "flow-pulse");
+      activateBranchSvgLine(topLine, statusClass, "flow-left");
+      activateBranchSvgLine(bottomLine, statusClass, "flow-right");
+      return;
+    }
+    if (mode === "up") {
+      activateBranchSvgLine(stemB, statusClass, "flow-pulse");
+      activateBranchSvgLine(topLine, statusClass, "flow-left");
+      return;
+    }
+    if (mode === "down") {
+      activateBranchSvgLine(stemA, statusClass, "flow-pulse");
+      activateBranchSvgLine(bottomLine, statusClass, "flow-right");
+      return;
+    }
+    activateBranchSvgLine(stemA, statusClass, "flow-pulse");
+    activateBranchSvgLine(stemB, statusClass, "flow-pulse");
+    activateBranchSvgLine(topLine, statusClass, "flow-pulse");
+    activateBranchSvgLine(bottomLine, statusClass, "flow-pulse");
   }
 
   function activateTrack(trackEl, statusClass, flowClass) {
