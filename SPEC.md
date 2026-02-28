@@ -160,23 +160,36 @@ Railway_status_map/
 
 ## 8. データモデル
 - 路線キー: `area:line_key`
-- 路線レコード
-- `area`, `lineName`, `lineNameKana`, `scope`, `stations[]`
-- 駅レコード
-- `id`, `name`, `nameKana`, `interchanges[]`
-- 乗換レコード
-- `toOperator`, `toLine`, `toStationName`
+- 路線レコード: `area`, `lineName`, `lineNameKana`, `scope`, `stations[]`
+- 駅レコード: `id`, `name`, `nameKana`, `interchanges[]`
+- 乗換レコード: `toOperator`, `toLine`, `toStationName`
 
 ## 9. 駅メタデータ分割方針
 - 基本方針: **路線別ファイルを正** とする（`station_metadata/lines/*.js`）。
 - `station_metadata/*.js` で分割定義し、`window.stationMetadataChunks` に追加する。
 - `station_metadata.js` で全チャンクを統合し `window.stationMetadata` を生成する。
-- 同一駅が複数ファイルに出る場合
-- `nameKana` は後勝ち
-- `interchanges` は重複除去してマージ
+- 同一駅が複数ファイルに出る場合: `nameKana` は後勝ち、`interchanges` は重複除去してマージする。
 - 方面別/サービス別ファイルは移行期間中の互換レイヤとして利用し、最終的には路線別へ寄せる。
 - 同一路線が複数方面に含まれるケースは、路線別ファイル1つを参照する運用で重複定義を避ける。
 - JR東日本サイト上で支社単位に分割される路線は、同一路線ファイル内で `scope` を意識した追記、または将来的に `lines/<line>__<scope>.js` 分割を許容する。
+
+## 9.1 `data_kanto.js` などの扱い
+- `data_kanto.js`、`data_tohoku.js`、`data_shinetsu.js` などは、今後 **駅データの正本としては扱わない**。
+- これらのファイルは原則として **路線台帳** として利用する。
+- 路線台帳に残す情報: `lineId`, `lineName`, `lineNameKana`, `area`, `scope`, `branch`, `operator`, `symbol`, `displayOrder`
+- 路線台帳には、ループ路線、支線レイアウトなどカード描画に必要な最小メタ情報のみを保持する。
+- `stations[]` の駅一覧、駅名かな、乗換情報、駅順、支線の実データは、原則として `station_metadata/lines/*.js` を正本とする。
+- 運用上、新規路線追加や既存路線修正時は **まず路線ファイルを更新** し、`data_*.js` 側には必要最小限の登録情報だけを反映する。
+- 利用環境での手動メンテナンス負荷を下げるため、将来的には「1路線の修正は1ファイルで完結する」状態を目標とする。
+
+## 9.2 移行方針
+- 当面は既存実装との互換のため `data_*.js` を残す。
+- ただし、これ以上 `data_*.js` に駅個別データを増やさないことを原則とする。
+- 既存の駅個別データは、更新頻度の高い路線から順に `station_metadata/lines/*.js` へ寄せる。
+- 最終目標:
+- `data_*.js` は、路線一覧、分類、表示順、描画に必要な最小メタ情報のみを持つ。
+- `station_metadata/lines/*.js` は、駅一覧、かな、乗換、駅順、支線・分岐を含む路線実体データを持つ。
+- この方針により、実運用環境では路線ファイルのみを主に更新対象とし、二重更新を極力発生させない。
 
 ## 10. 今後の拡充方針
 - 駅メタデータはユーザー要求の単位（方面/路線）で分割を整理する。
@@ -189,11 +202,7 @@ Railway_status_map/
 - 形式: キーは `area:line_key`、値は駅名配列（路線図の表示順）。
 - 判定コマンド: `node tools/check_station_completeness.js`
 - レポート出力: `reports/station_completeness.md`
-- 判定基準
-- マスタ未登録路線が 0
-- 現行未登録路線が 0
-- 駅数不一致が 0
-- 駅順不一致が 0
+- 判定基準: マスタ未登録路線が 0、現行未登録路線が 0、駅数不一致が 0、駅順不一致が 0
 
 ## 11. 路線記号アイコン運用
 - 路線記号は `railway_lines.js` の `ROUTE_SYMBOL_BY_LINE_NAME` で路線名に紐付ける。
