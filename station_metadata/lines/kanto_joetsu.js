@@ -1,5 +1,6 @@
 // 路線別メタデータ: 上越線（関東）
 window.stationMetadataChunks = window.stationMetadataChunks || {};
+window.railwayLineFileChunks = window.railwayLineFileChunks || {};
 Object.assign(window.stationMetadataChunks, {
   "高崎": {
     nameKana: "たかさき",
@@ -32,4 +33,20 @@ Object.assign(window.stationMetadataChunks, {
   "後閑": { nameKana: "ごかん" },
   "上牧": { nameKana: "かみもく" },
   "水上": { nameKana: "みなかみ" }
+});
+
+Object.assign(window.railwayLineFileChunks, {
+  "kanto:joetsu_kanto": {
+    area: "関東",
+    operator: "JR東日本",
+    lineName: "上越線",
+    lineNameKana: "じょうえつせん",
+    scope: "高崎支社",
+    directionGroups: ["東北・高崎方面"],
+    stations: [
+      { name: "高崎" }, { name: "高崎問屋町" }, { name: "井野" }, { name: "新前橋" }, { name: "群馬総社" },
+      { name: "八木原" }, { name: "渋川" }, { name: "敷島" }, { name: "津久田" }, { name: "岩本" },
+      { name: "沼田" }, { name: "後閑" }, { name: "上牧" }, { name: "水上" }
+    ]
+  }
 });

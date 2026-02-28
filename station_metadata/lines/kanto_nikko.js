@@ -1,5 +1,6 @@
 // 路線別メタデータ: 日光線（関東）
 window.stationMetadataChunks = window.stationMetadataChunks || {};
+window.railwayLineFileChunks = window.railwayLineFileChunks || {};
 Object.assign(window.stationMetadataChunks, {
   "宇都宮": {
     nameKana: "うつのみや",
@@ -22,6 +23,21 @@ Object.assign(window.stationMetadataChunks, {
     nameKana: "にっこう",
     interchanges: [
       { toOperator: "東武鉄道", toLine: "日光線", toStationName: "東武日光駅" }
+    ]
+  }
+});
+
+Object.assign(window.railwayLineFileChunks, {
+  "kanto:nikko": {
+    area: "関東",
+    operator: "JR東日本",
+    lineName: "日光線",
+    lineNameKana: "にっこうせん",
+    scope: "大宮支社",
+    directionGroups: ["東北・高崎方面"],
+    stations: [
+      { name: "宇都宮" }, { name: "鶴田" }, { name: "鹿沼" }, { name: "文挾" },
+      { name: "下野大沢" }, { name: "今市" }, { name: "日光" }
     ]
   }
 });

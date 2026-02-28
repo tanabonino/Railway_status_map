@@ -1,5 +1,6 @@
 // 路線別メタデータ: 両毛線（関東）
 window.stationMetadataChunks = window.stationMetadataChunks || {};
+window.railwayLineFileChunks = window.railwayLineFileChunks || {};
 Object.assign(window.stationMetadataChunks, {
   "小山": {
     nameKana: "おやま",
@@ -54,6 +55,23 @@ Object.assign(window.stationMetadataChunks, {
     nameKana: "しんまえばし",
     interchanges: [
       { toOperator: "JR東日本", toLine: "上越線" }
+    ]
+  }
+});
+
+Object.assign(window.railwayLineFileChunks, {
+  "kanto:ryomo": {
+    area: "関東",
+    operator: "JR東日本",
+    lineName: "両毛線",
+    lineNameKana: "りょうもうせん",
+    scope: "高崎支社",
+    directionGroups: ["東北・高崎方面"],
+    stations: [
+      { name: "小山" }, { name: "思川" }, { name: "栃木" }, { name: "大平下" }, { name: "岩舟" },
+      { name: "佐野" }, { name: "富田" }, { name: "足利" }, { name: "山前" }, { name: "桐生" },
+      { name: "岩宿" }, { name: "国定" }, { name: "伊勢崎" }, { name: "駒形" }, { name: "前橋大島" },
+      { name: "前橋" }, { name: "新前橋" }
     ]
   }
 });

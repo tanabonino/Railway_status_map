@@ -1,5 +1,6 @@
 // 路線別メタデータ: 宇都宮線（関東）
 window.stationMetadataChunks = window.stationMetadataChunks || {};
+window.railwayLineFileChunks = window.railwayLineFileChunks || {};
 Object.assign(window.stationMetadataChunks, {
   "東京": { nameKana: "とうきょう", interchanges: [{ toOperator: "東京メトロ", toLine: "丸ノ内線" }] },
   "上野": { nameKana: "うえの", interchanges: [{ toOperator: "東京メトロ", toLine: "銀座線" }, { toOperator: "東京メトロ", toLine: "日比谷線" }] },
@@ -16,4 +17,21 @@ Object.assign(window.stationMetadataChunks, {
   "石橋": { nameKana: "いしばし" },
   "雀宮": { nameKana: "すずめのみや" },
   "宇都宮": { nameKana: "うつのみや", interchanges: [{ toOperator: "宇都宮ライトレール", toLine: "宇都宮芳賀ライトレール線" }] }
+});
+
+Object.assign(window.railwayLineFileChunks, {
+  "kanto:utsunomiya": {
+    area: "関東",
+    operator: "JR東日本",
+    lineName: "宇都宮線",
+    lineNameKana: "うつのみやせん",
+    scope: "大宮支社",
+    routeSymbol: "JU",
+    directionGroups: ["東北・高崎方面"],
+    stations: [
+      { name: "東京" }, { name: "上野" }, { name: "尾久" }, { name: "赤羽" }, { name: "浦和" },
+      { name: "さいたま新都心" }, { name: "大宮" }, { name: "蓮田" }, { name: "久喜" }, { name: "古河" },
+      { name: "小山" }, { name: "自治医大" }, { name: "石橋" }, { name: "雀宮" }, { name: "宇都宮" }
+    ]
+  }
 });

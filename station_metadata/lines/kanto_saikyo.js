@@ -2,6 +2,7 @@
 // 上り（大宮→大崎）/下り（大崎→大宮）
 
 window.stationMetadataChunks = window.stationMetadataChunks || {};
+window.railwayLineFileChunks = window.railwayLineFileChunks || {};
 Object.assign(window.stationMetadataChunks, {
   "大崎": { nameKana: "おおさき", interchanges: [{ toOperator: "JR東日本", toLine: "山手線" }, { toOperator: "JR東日本", toLine: "湘南新宿ライン" }, { toOperator: "東京臨海高速鉄道", toLine: "りんかい線", toStationName: "直通例あり" }] },
   "恵比寿": { nameKana: "えびす", interchanges: [{ toOperator: "JR東日本", toLine: "山手線" }] },
@@ -22,4 +23,22 @@ Object.assign(window.stationMetadataChunks, {
   "与野本町": { nameKana: "よのほんまち" },
   "さいたま新都心": { nameKana: "さいたましんとしん" },
   "大宮": { nameKana: "おおみや", interchanges: [{ toOperator: "JR東日本", toLine: "東北線" }, { toOperator: "JR東日本", toLine: "高崎線" }, { toOperator: "JR東日本", toLine: "宇都宮線" }, { toOperator: "JR東日本", toLine: "京浜東北線" }, { toOperator: "JR東日本", toLine: "川越線" }, { toOperator: "JR東日本", toLine: "他多数" }] }
+});
+
+Object.assign(window.railwayLineFileChunks, {
+  "kanto:saikyo": {
+    area: "関東",
+    operator: "JR東日本",
+    lineName: "埼京線",
+    lineNameKana: "さいきょうせん",
+    scope: "東京支社",
+    routeSymbol: "JA",
+    directionGroups: ["東北・高崎方面"],
+    stations: [
+      { name: "大崎" }, { name: "恵比寿" }, { name: "渋谷" }, { name: "新宿" }, { name: "池袋" },
+      { name: "板橋" }, { name: "十条" }, { name: "赤羽" }, { name: "北赤羽" }, { name: "浮間舟渡" },
+      { name: "戸田公園" }, { name: "戸田" }, { name: "北戸田" }, { name: "武蔵浦和" }, { name: "中浦和" },
+      { name: "南与野" }, { name: "与野本町" }, { name: "さいたま新都心" }, { name: "大宮" }
+    ]
+  }
 });

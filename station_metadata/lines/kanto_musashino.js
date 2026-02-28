@@ -1,5 +1,6 @@
 // 路線別メタデータ: 武蔵野線（関東）
 window.stationMetadataChunks = window.stationMetadataChunks || {};
+window.railwayLineFileChunks = window.railwayLineFileChunks || {};
 Object.assign(window.stationMetadataChunks, {
   "府中本町": { nameKana: "ふちゅうほんまち", interchanges: [{ toOperator: "JR東日本", toLine: "南武線" }] },
   "北府中": { nameKana: "きたふちゅう" },
@@ -27,4 +28,23 @@ Object.assign(window.stationMetadataChunks, {
   "市川大野": { nameKana: "いちかわおおの" },
   "船橋法典": { nameKana: "ふなばしほうてん" },
   "西船橋": { nameKana: "にしふなばし", interchanges: [{ toOperator: "JR東日本", toLine: "京葉線" }, { toOperator: "JR東日本", toLine: "総武線（各駅停車）" }, { toOperator: "東京メトロ", toLine: "東西線" }, { toOperator: "東葉高速鉄道", toLine: "東葉高速線" }] }
+});
+
+Object.assign(window.railwayLineFileChunks, {
+  "kanto:musashino": {
+    area: "関東",
+    operator: "JR東日本",
+    lineName: "武蔵野線",
+    lineNameKana: "むさしのせん",
+    scope: "関東本部",
+    routeSymbol: "JM",
+    directionGroups: ["東北・高崎方面", "中央方面", "総武方面"],
+    stations: [
+      { name: "府中本町" }, { name: "北府中" }, { name: "西国分寺" }, { name: "新小平" }, { name: "新秋津" },
+      { name: "東所沢" }, { name: "新座" }, { name: "北朝霞" }, { name: "西浦和" }, { name: "武蔵浦和" },
+      { name: "南浦和" }, { name: "東浦和" }, { name: "東川口" }, { name: "南越谷" }, { name: "越谷レイクタウン" },
+      { name: "吉川" }, { name: "吉川美南" }, { name: "新三郷" }, { name: "三郷" }, { name: "南流山" },
+      { name: "新松戸" }, { name: "新八柱" }, { name: "東松戸" }, { name: "市川大野" }, { name: "船橋法典" }, { name: "西船橋" }
+    ]
+  }
 });
