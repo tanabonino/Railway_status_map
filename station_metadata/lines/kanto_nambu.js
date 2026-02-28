@@ -1,5 +1,6 @@
 // 路線別メタデータ: 南武線（関東）
 window.stationMetadataChunks = window.stationMetadataChunks || {};
+window.railwayLineFileChunks = window.railwayLineFileChunks || {};
 Object.assign(window.stationMetadataChunks, {
   "川崎": {"nameKana":"かわさき","interchanges":[{"toOperator":"京急","toLine":"本線","toStationName":"京急川崎"}]},
   "尻手": {"nameKana":"しって"},
@@ -27,4 +28,23 @@ Object.assign(window.stationMetadataChunks, {
   "矢川": {"nameKana":"やがわ"},
   "西国立": {"nameKana":"にしくにたち"},
   "立川": {"nameKana":"たちかわ","interchanges":[{"toOperator":"多摩都市モノレール","toLine":"多摩都市モノレール線"}]}
+});
+
+Object.assign(window.railwayLineFileChunks, {
+  "kanto:nambu": {
+    area: "関東",
+    operator: "JR東日本",
+    lineName: "南武線",
+    lineNameKana: "なんぶせん",
+    scope: "横浜支社",
+    routeSymbol: "JN",
+    directionGroups: ["東海道方面"],
+    stations: [
+      { name: "川崎" }, { name: "尻手" }, { name: "矢向" }, { name: "鹿島田" }, { name: "平間" },
+      { name: "向河原" }, { name: "武蔵小杉" }, { name: "武蔵中原" }, { name: "武蔵新城" }, { name: "武蔵溝ノ口" },
+      { name: "津田山" }, { name: "久地" }, { name: "宿河原" }, { name: "登戸" }, { name: "中野島" },
+      { name: "稲田堤" }, { name: "矢野口" }, { name: "稲城長沼" }, { name: "南多摩" }, { name: "府中本町" },
+      { name: "分倍河原" }, { name: "西府" }, { name: "谷保" }, { name: "矢川" }, { name: "西国立" }, { name: "立川" }
+    ]
+  }
 });

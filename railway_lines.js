@@ -1,5 +1,6 @@
 // アプリ本体（file:// で動作。fetch不要）
-// 路線データは data_*.js から読み込む。
+// 路線データは data_*.js を基本としつつ、
+// station_metadata/lines/*.js 側の路線定義で上書きできるようにする。
 function normalizeStationMetaKey(name) {
   return String(name || "")
     .replace(/\s+/g, "")
@@ -39,9 +40,13 @@ function normalizeLegacyLine(line) {
   const stations = Array.isArray(line && line.stations) ? line.stations : [];
   return {
     area: (line && line.area) || "未分類",
+    operator: (line && line.operator) || "JR東日本",
     lineName: (line && line.lineName) || "名称未設定",
     lineNameKana: (line && line.lineNameKana) || "",
     scope: (line && line.scope) || "",
+    routeSymbol: (line && line.routeSymbol) || "",
+    directionGroups: Array.isArray(line && line.directionGroups) ? line.directionGroups.slice() : [],
+    displayOrder: Number.isFinite(Number(line && line.displayOrder)) ? Number(line.displayOrder) : null,
     branchLayout: normalizeBranchLayout(line && line.branchLayout, stations.length),
     stations: stations.map(function (st) {
       const stationName = st && st.name ? String(st.name) : "駅名未設定";
@@ -74,11 +79,16 @@ function normalizeBranchLayout(layout, stationCount) {
   };
 }
 
-function buildLineDataMap(railDataRoot, fallbackChunks) {
+function buildLineDataMap(railDataRoot, fallbackChunks, lineFileChunks) {
   const out = {};
   const fallback = fallbackChunks || {};
   Object.keys(fallback).forEach(function (lineId) {
     out[lineId] = normalizeLegacyLine(fallback[lineId]);
+  });
+
+  const fileChunks = lineFileChunks || {};
+  Object.keys(fileChunks).forEach(function (lineId) {
+    out[lineId] = normalizeLegacyLine(fileChunks[lineId]);
   });
 
   const lines = (railDataRoot && railDataRoot.lines) || {};
@@ -123,9 +133,13 @@ function buildLineDataMap(railDataRoot, fallbackChunks) {
 
     out[lineId] = {
       area: line.area || "未分類",
+      operator: line.operator || "JR東日本",
       lineName: line.lineName || lineId,
       lineNameKana: line.lineNameKana || "",
       scope: line.scope || "",
+      routeSymbol: line.routeSymbol || "",
+      directionGroups: Array.isArray(line.directionGroups) ? line.directionGroups.slice() : [],
+      displayOrder: Number.isFinite(Number(line.displayOrder)) ? Number(line.displayOrder) : null,
       branchLayout: normalizeBranchLayout(line.branchLayout, mappedStations.length),
       stations: mappedStations
     };
@@ -157,9 +171,34 @@ function buildDirectionLinesFromRailData(railDataRoot) {
   return out;
 }
 
+function buildDirectionLinesFromLineMeta(linesData) {
+  const out = {};
+  Object.keys(linesData || {}).forEach(function (lineId) {
+    const line = linesData[lineId] || {};
+    const groups = Array.isArray(line.directionGroups) ? line.directionGroups : [];
+    groups.forEach(function (groupName) {
+      if (!groupName || !line.lineName) {
+        return;
+      }
+      if (!out[groupName]) {
+        out[groupName] = [];
+      }
+      if (out[groupName].indexOf(line.lineName) === -1) {
+        out[groupName].push(line.lineName);
+      }
+    });
+  });
+  return out;
+}
+
 const railDataRoot = window.railData || {};
+const railwayLinesData = buildLineDataMap(
+  railDataRoot,
+  window.railwayLinesDataChunks || {},
+  window.railwayLineFileChunks || {}
+);
 const directionLinesFromData = buildDirectionLinesFromRailData(railDataRoot);
-const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataChunks || {});
+const directionLinesFromLineMeta = buildDirectionLinesFromLineMeta(railwayLinesData);
 (function () {
   const AREA_PRIORITY = ["関東", "東北", "信越"];
 
@@ -268,6 +307,21 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
 
   Object.keys(directionLinesFromData).forEach(function (groupName) {
     DIRECTION_LINES[groupName] = directionLinesFromData[groupName];
+    if (DIRECTION_ORDER.indexOf(groupName) === -1) {
+      DIRECTION_ORDER.push(groupName);
+    }
+  });
+
+  Object.keys(directionLinesFromLineMeta).forEach(function (groupName) {
+    const names = directionLinesFromLineMeta[groupName];
+    if (!Array.isArray(DIRECTION_LINES[groupName])) {
+      DIRECTION_LINES[groupName] = [];
+    }
+    names.forEach(function (lineName) {
+      if (DIRECTION_LINES[groupName].indexOf(lineName) === -1) {
+        DIRECTION_LINES[groupName].push(lineName);
+      }
+    });
     if (DIRECTION_ORDER.indexOf(groupName) === -1) {
       DIRECTION_ORDER.push(groupName);
     }
@@ -576,7 +630,7 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
 
   function formatLineTitle(line) {
     const rawName = (line && line.lineName) || "";
-    const name = lineNameWithSymbol(rawName);
+    const name = lineNameWithSymbol(line || rawName);
     const kana = (line && line.lineNameKana) || "";
     if (!name) {
       return "";
@@ -594,7 +648,7 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
     target.innerHTML = "";
 
     const rawName = (line && line.lineName) || "";
-    const symbol = routeSymbolByLineName(rawName);
+    const symbol = routeSymbolForLine(line || rawName);
     if (symbol) {
       target.appendChild(createRouteSymbolNode(symbol));
     }
@@ -612,16 +666,29 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
       return lineId;
     }
     const scope = line.scope ? " / " + line.scope : "";
-    return "[" + line.area + "] " + lineNameWithSymbol(line.lineName) + scope;
+    return "[" + line.area + "] " + lineNameWithSymbol(line) + scope;
   }
 
-  function lineNameWithSymbol(lineName) {
-    const name = String(lineName || "");
-    const symbol = routeSymbolByLineName(name);
+  function lineNameWithSymbol(lineOrName) {
+    const name = typeof lineOrName === "object"
+      ? String((lineOrName && lineOrName.lineName) || "")
+      : String(lineOrName || "");
+    const symbol = routeSymbolForLine(lineOrName);
     if (!symbol || !name) {
       return name;
     }
     return symbol + " " + name;
+  }
+
+  function routeSymbolForLine(lineOrName) {
+    if (lineOrName && typeof lineOrName === "object") {
+      const explicit = String(lineOrName.routeSymbol || "");
+      if (explicit) {
+        return explicit;
+      }
+      return routeSymbolByLineName(lineOrName.lineName || "");
+    }
+    return routeSymbolByLineName(lineOrName || "");
   }
 
   function routeSymbolByLineName(lineName) {
@@ -888,7 +955,7 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
     const affectedLines = targetIds.map(function (lineId) {
       const line = railwayLinesData[lineId] || {};
       return line.lineName
-        ? (lineNameWithSymbol(line.lineName) + (line.scope ? "（" + line.scope + "）" : ""))
+        ? (lineNameWithSymbol(line) + (line.scope ? "（" + line.scope + "）" : ""))
         : lineId;
     });
 
@@ -1478,6 +1545,18 @@ const railwayLinesData = buildLineDataMap(railDataRoot, window.railwayLinesDataC
 
       if (aArea !== bArea) {
         return AREA_PRIORITY.indexOf(aArea) - AREA_PRIORITY.indexOf(bArea);
+      }
+
+      const orderA = railwayLinesData[a].displayOrder;
+      const orderB = railwayLinesData[b].displayOrder;
+      const hasOrderA = Number.isFinite(orderA);
+      const hasOrderB = Number.isFinite(orderB);
+      if (hasOrderA || hasOrderB) {
+        if (!hasOrderA) return 1;
+        if (!hasOrderB) return -1;
+        if (orderA !== orderB) {
+          return orderA - orderB;
+        }
       }
 
       const byName = railwayLinesData[a].lineName.localeCompare(railwayLinesData[b].lineName, "ja");

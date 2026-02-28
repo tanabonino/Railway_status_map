@@ -1,5 +1,6 @@
 // 直通サービス系メタデータ（上野東京ライン / 湘南新宿ライン / 相鉄線直通列車）
 window.stationMetadataChunks = window.stationMetadataChunks || {};
+window.railwayLineFileChunks = window.railwayLineFileChunks || {};
 Object.assign(window.stationMetadataChunks, {
   "雀宮": {
     nameKana: "すずめのみや"
@@ -388,6 +389,89 @@ Object.assign(window.stationMetadataChunks, {
     interchanges: [
       { toOperator: "JR東日本", toLine: "伊東線" },
       { toOperator: "JR東海", toLine: "東海道新幹線" }
+    ]
+  }
+});
+
+Object.assign(window.railwayLineFileChunks, {
+  "kanto:ueno_tokyo_utsunomiya": {
+    area: "関東",
+    operator: "JR東日本",
+    lineName: "上野東京ライン",
+    lineNameKana: "うえのとうきょうらいん",
+    scope: "宇都宮線系統",
+    routeSymbol: "JU",
+    directionGroups: ["直通サービス"],
+    stations: [
+      { name: "宇都宮" }, { name: "雀宮" }, { name: "石橋" }, { name: "自治医大" }, { name: "小金井" },
+      { name: "小山" }, { name: "間々田" }, { name: "野木" }, { name: "古河" }, { name: "栗橋" },
+      { name: "東鷲宮" }, { name: "久喜" }, { name: "新白岡" }, { name: "白岡" }, { name: "蓮田" },
+      { name: "東大宮" }, { name: "土呂" }, { name: "大宮" }, { name: "さいたま新都心" }, { name: "浦和" },
+      { name: "赤羽" }, { name: "尾久" }, { name: "上野" }, { name: "東京" }, { name: "新橋" },
+      { name: "品川" }, { name: "川崎" }, { name: "横浜" }, { name: "戸塚" }, { name: "大船" },
+      { name: "藤沢" }, { name: "辻堂" }, { name: "茅ケ崎" }, { name: "平塚" }, { name: "大磯" },
+      { name: "二宮" }, { name: "国府津" }, { name: "鴨宮" }, { name: "小田原" }, { name: "早川" },
+      { name: "根府川" }, { name: "真鶴" }, { name: "湯河原" }, { name: "熱海" }
+    ]
+  },
+  "kanto:ueno_tokyo_takasaki": {
+    area: "関東",
+    operator: "JR東日本",
+    lineName: "上野東京ライン",
+    lineNameKana: "うえのとうきょうらいん",
+    scope: "高崎線系統",
+    routeSymbol: "JU",
+    directionGroups: ["直通サービス"],
+    stations: [
+      { name: "東京" }, { name: "上野" }, { name: "赤羽" }, { name: "大宮" }, { name: "桶川" }, { name: "熊谷" }, { name: "高崎" }
+    ]
+  },
+  "kanto:shonan_shinjuku_utsunomiya": {
+    area: "関東",
+    operator: "JR東日本",
+    lineName: "湘南新宿ライン",
+    lineNameKana: "しょうなんしんじゅくらいん",
+    scope: "宇都宮線系統",
+    routeSymbol: "JS",
+    directionGroups: ["直通サービス"],
+    stations: [
+      { name: "宇都宮" }, { name: "雀宮" }, { name: "石橋" }, { name: "自治医大" }, { name: "小金井" },
+      { name: "小山" }, { name: "間々田" }, { name: "野木" }, { name: "古河" }, { name: "栗橋" },
+      { name: "東鷲宮" }, { name: "久喜" }, { name: "新白岡" }, { name: "白岡" }, { name: "蓮田" },
+      { name: "東大宮" }, { name: "土呂" }, { name: "大宮" }, { name: "浦和" }, { name: "赤羽" },
+      { name: "池袋" }, { name: "新宿" }, { name: "渋谷" }, { name: "恵比寿" }, { name: "大崎" },
+      { name: "西大井" }, { name: "武蔵小杉" }, { name: "新川崎" }, { name: "横浜" }, { name: "保土ケ谷" },
+      { name: "東戸塚" }, { name: "戸塚" }, { name: "大船" }, { name: "北鎌倉" }, { name: "鎌倉" }, { name: "逗子" }
+    ]
+  },
+  "kanto:shonan_shinjuku_takasaki": {
+    area: "関東",
+    operator: "JR東日本",
+    lineName: "湘南新宿ライン",
+    lineNameKana: "しょうなんしんじゅくらいん",
+    scope: "高崎線系統",
+    routeSymbol: "JS",
+    directionGroups: ["直通サービス"],
+    stations: [
+      { name: "高崎" }, { name: "倉賀野" }, { name: "新町" }, { name: "神保原" }, { name: "本庄" },
+      { name: "岡部" }, { name: "深谷" }, { name: "籠原" }, { name: "熊谷" }, { name: "行田" },
+      { name: "吹上" }, { name: "北鴻巣" }, { name: "鴻巣" }, { name: "北本" }, { name: "桶川" },
+      { name: "北上尾" }, { name: "上尾" }, { name: "宮原" }, { name: "大宮" }, { name: "浦和" },
+      { name: "赤羽" }, { name: "池袋" }, { name: "新宿" }, { name: "渋谷" }, { name: "恵比寿" },
+      { name: "大崎" }, { name: "西大井" }, { name: "武蔵小杉" }, { name: "横浜" }, { name: "戸塚" },
+      { name: "大船" }, { name: "藤沢" }, { name: "辻堂" }, { name: "茅ケ崎" }, { name: "平塚" },
+      { name: "大磯" }, { name: "二宮" }, { name: "国府津" }, { name: "鴨宮" }, { name: "小田原" }
+    ]
+  },
+  "kanto:sotetsu_direct": {
+    area: "関東",
+    operator: "JR東日本",
+    lineName: "相鉄線直通列車",
+    lineNameKana: "そうてつせんちょくつうれっしゃ",
+    scope: "直通",
+    directionGroups: ["直通サービス"],
+    stations: [
+      { name: "新宿" }, { name: "大崎" }, { name: "武蔵小杉" }
     ]
   }
 });

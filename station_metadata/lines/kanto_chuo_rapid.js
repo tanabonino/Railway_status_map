@@ -1,5 +1,6 @@
 // 路線別メタデータ: 中央線快速電車（関東）
 window.stationMetadataChunks = window.stationMetadataChunks || {};
+window.railwayLineFileChunks = window.railwayLineFileChunks || {};
 Object.assign(window.stationMetadataChunks, {
   "東京": { nameKana: "とうきょう", interchanges: [{ toOperator: "東京メトロ", toLine: "丸ノ内線" }] },
   "神田": { nameKana: "かんだ", interchanges: [{ toOperator: "東京メトロ", toLine: "銀座線" }] },
@@ -15,4 +16,21 @@ Object.assign(window.stationMetadataChunks, {
   "八王子": { nameKana: "はちおうじ", interchanges: [{ toOperator: "京王", toLine: "京王線", toStationName: "京王八王子" }] },
   "西八王子": { nameKana: "にしはちおうじ" },
   "高尾": { nameKana: "たかお", interchanges: [{ toOperator: "京王", toLine: "高尾線" }] }
+});
+
+Object.assign(window.railwayLineFileChunks, {
+  "kanto:chuo_rapid": {
+    area: "関東",
+    operator: "JR東日本",
+    lineName: "中央線快速電車",
+    lineNameKana: "ちゅうおうせんかいそくでんしゃ",
+    scope: "東京支社",
+    routeSymbol: "JC",
+    directionGroups: ["中央方面"],
+    stations: [
+      { name: "東京" }, { name: "神田" }, { name: "御茶ノ水" }, { name: "四ツ谷" }, { name: "新宿" },
+      { name: "中野" }, { name: "荻窪" }, { name: "吉祥寺" }, { name: "三鷹" }, { name: "国分寺" },
+      { name: "立川" }, { name: "八王子" }, { name: "西八王子" }, { name: "高尾" }
+    ]
+  }
 });

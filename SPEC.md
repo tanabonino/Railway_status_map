@@ -182,6 +182,26 @@ Railway_status_map/
 - 運用上、新規路線追加や既存路線修正時は **まず路線ファイルを更新** し、`data_*.js` 側には必要最小限の登録情報だけを反映する。
 - 利用環境での手動メンテナンス負荷を下げるため、将来的には「1路線の修正は1ファイルで完結する」状態を目標とする。
 
+## 9.1.1 路線ファイル標準項目
+- `station_metadata/lines/*.js` の路線定義は、キーを `lineId`、値を路線オブジェクトとする。
+- 最低限の推奨項目
+- `area`
+- `operator`
+- `lineName`
+- `lineNameKana`
+- `scope`
+- `routeSymbol`
+- `directionGroups`
+- `displayOrder`
+- `branchLayout`
+- `stations`
+- `stations` 配列の各要素は、原則として `{ name }` を持つ。
+- 必要に応じて各駅に `id`、`nameKana`、`interchanges` を持たせてよい。
+- 駅の `nameKana`、`interchanges` は `window.stationMetadataChunks` 側で補完可能だが、将来的には路線ファイル側へ寄せることを許容する。
+- `routeSymbol` は `ROUTE_SYMBOL_BY_LINE_NAME` の補助ではなく、将来的には路線ファイル側定義を優先する。
+- `directionGroups` は方面フィルタへの所属を表す配列とし、例: `["総武方面"]` のように記述する。
+- `displayOrder` は同一エリア内の表示順調整に使用する任意項目とする。
+
 ## 9.2 移行方針
 - 当面は既存実装との互換のため `data_*.js` を残す。
 - ただし、これ以上 `data_*.js` に駅個別データを増やさないことを原則とする。

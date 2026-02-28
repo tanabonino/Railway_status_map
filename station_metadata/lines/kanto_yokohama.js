@@ -1,5 +1,6 @@
 // 路線別メタデータ: 横浜線（関東）
 window.stationMetadataChunks = window.stationMetadataChunks || {};
+window.railwayLineFileChunks = window.railwayLineFileChunks || {};
 Object.assign(window.stationMetadataChunks, {
   "東神奈川": {"nameKana":"ひがしかながわ","interchanges":[{"toOperator":"京急","toLine":"本線","toStationName":"京急東神奈川"}]},
   "大口": {"nameKana":"おおぐち"},
@@ -21,4 +22,22 @@ Object.assign(window.stationMetadataChunks, {
   "八王子みなみ野": {"nameKana":"はちおうじみなみの"},
   "片倉": {"nameKana":"かたくら"},
   "八王子": {"nameKana":"はちおうじ","interchanges":[{"toOperator":"京王","toLine":"京王線","toStationName":"京王八王子"}]}
+});
+
+Object.assign(window.railwayLineFileChunks, {
+  "kanto:yokohama": {
+    area: "関東",
+    operator: "JR東日本",
+    lineName: "横浜線",
+    lineNameKana: "よこはません",
+    scope: "八王子支社",
+    routeSymbol: "JH",
+    directionGroups: ["東海道方面"],
+    stations: [
+      { name: "東神奈川" }, { name: "大口" }, { name: "菊名" }, { name: "新横浜" }, { name: "小机" },
+      { name: "鴨居" }, { name: "中山" }, { name: "十日市場" }, { name: "長津田" }, { name: "成瀬" },
+      { name: "町田" }, { name: "古淵" }, { name: "淵野辺" }, { name: "矢部" }, { name: "相模原" },
+      { name: "橋本" }, { name: "相原" }, { name: "八王子みなみ野" }, { name: "片倉" }, { name: "八王子" }
+    ]
+  }
 });

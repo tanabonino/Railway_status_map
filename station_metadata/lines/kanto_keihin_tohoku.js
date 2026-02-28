@@ -1,5 +1,6 @@
 // 路線別メタデータ: 京浜東北線（関東）
 window.stationMetadataChunks = window.stationMetadataChunks || {};
+window.railwayLineFileChunks = window.railwayLineFileChunks || {};
 Object.assign(window.stationMetadataChunks, {
   "大宮": {"nameKana":"おおみや","interchanges":[{"toOperator":"東武","toLine":"野田線"},{"toOperator":"埼玉新都市交通","toLine":"伊奈線"}]},
   "さいたま新都心": {"nameKana":"さいたましんとしん"},
@@ -48,4 +49,28 @@ Object.assign(window.stationMetadataChunks, {
   "港南台": {"nameKana":"こうなんだい"},
   "本郷台": {"nameKana":"ほんごうだい"},
   "大船": {"nameKana":"おおふな","interchanges":[{"toOperator":"湘南モノレール","toLine":"江の島線"}]}
+});
+
+Object.assign(window.railwayLineFileChunks, {
+  "kanto:keihin_tohoku_local": {
+    area: "関東",
+    operator: "JR東日本",
+    lineName: "京浜東北線",
+    lineNameKana: "けいひんとうほくせん",
+    scope: "東京支社",
+    routeSymbol: "JK",
+    directionGroups: ["東海道方面", "東北・高崎方面"],
+    stations: [
+      { name: "大宮" }, { name: "さいたま新都心" }, { name: "与野" }, { name: "北浦和" }, { name: "浦和" },
+      { name: "南浦和" }, { name: "蕨" }, { name: "西川口" }, { name: "川口" }, { name: "赤羽" },
+      { name: "東十条" }, { name: "王子" }, { name: "上中里" }, { name: "田端" }, { name: "西日暮里" },
+      { name: "日暮里" }, { name: "鶯谷" }, { name: "上野" }, { name: "御徒町" }, { name: "秋葉原" },
+      { name: "神田" }, { name: "東京" }, { name: "有楽町" }, { name: "新橋" }, { name: "浜松町" },
+      { name: "田町" }, { name: "高輪ゲートウェイ" }, { name: "品川" }, { name: "大井町" }, { name: "大森" },
+      { name: "蒲田" }, { name: "川崎" }, { name: "鶴見" }, { name: "新子安" }, { name: "東神奈川" },
+      { name: "横浜" }, { name: "桜木町" }, { name: "関内" }, { name: "石川町" }, { name: "山手" },
+      { name: "根岸" }, { name: "磯子" }, { name: "新杉田" }, { name: "洋光台" }, { name: "港南台" },
+      { name: "本郷台" }, { name: "大船" }
+    ]
+  }
 });

@@ -1,5 +1,6 @@
 // 路線別メタデータ: 東海道線（関東）
 window.stationMetadataChunks = window.stationMetadataChunks || {};
+window.railwayLineFileChunks = window.railwayLineFileChunks || {};
 Object.assign(window.stationMetadataChunks, {
   "東京": {"nameKana":"とうきょう","interchanges":[{"toOperator":"東京メトロ","toLine":"丸ノ内線"}]},
   "新橋": {"nameKana":"しんばし","interchanges":[{"toOperator":"都営","toLine":"浅草線"},{"toOperator":"東京メトロ","toLine":"銀座線"},{"toOperator":"ゆりかもめ","toLine":"東京臨海新交通臨海線"}]},
@@ -22,4 +23,23 @@ Object.assign(window.stationMetadataChunks, {
   "真鶴": {"nameKana":"まなづる"},
   "湯河原": {"nameKana":"ゆがわら"},
   "熱海": {"nameKana":"あたみ"}
+});
+
+Object.assign(window.railwayLineFileChunks, {
+  "kanto:tokaido": {
+    area: "関東",
+    operator: "JR東日本",
+    lineName: "東海道線",
+    lineNameKana: "とうかいどうせん",
+    scope: "横浜支社",
+    routeSymbol: "JT",
+    directionGroups: ["東海道方面"],
+    stations: [
+      { name: "東京" }, { name: "新橋" }, { name: "品川" }, { name: "川崎" }, { name: "横浜" },
+      { name: "戸塚" }, { name: "大船" }, { name: "藤沢" }, { name: "辻堂" }, { name: "茅ケ崎" },
+      { name: "平塚" }, { name: "大磯" }, { name: "二宮" }, { name: "国府津" }, { name: "鴨宮" },
+      { name: "小田原" }, { name: "早川" }, { name: "根府川" }, { name: "真鶴" }, { name: "湯河原" },
+      { name: "熱海" }
+    ]
+  }
 });

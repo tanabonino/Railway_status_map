@@ -1,5 +1,6 @@
 // 山手線系メタデータ
 window.stationMetadataChunks = window.stationMetadataChunks || {};
+window.railwayLineFileChunks = window.railwayLineFileChunks || {};
 Object.assign(window.stationMetadataChunks, {
   "東京": { nameKana: "とうきょう", interchanges: [{ toOperator: "JR東日本", toLine: "各線" }, { toOperator: "東京メトロ", toLine: "丸ノ内線" }] },
   "有楽町": { nameKana: "ゆうらくちょう", interchanges: [{ toOperator: "東京メトロ", toLine: "有楽町線" }, { toOperator: "東京メトロ", toLine: "日比谷線" }] },
@@ -33,3 +34,46 @@ Object.assign(window.stationMetadataChunks, {
   "神田": { nameKana: "かんだ", interchanges: [{ toOperator: "JR東日本", toLine: "中央線" }, { toOperator: "JR東日本", toLine: "京浜東北線" }, { toOperator: "東京メトロ", toLine: "銀座線" }] }
 });
 
+Object.assign(window.railwayLineFileChunks, {
+  "kanto:yamanote": {
+    area: "関東",
+    operator: "JR東日本",
+    lineName: "山手線",
+    lineNameKana: "やまのてせん",
+    scope: "東京支社",
+    routeSymbol: "JY",
+    directionGroups: ["山手線"],
+    stations: [
+      { name: "東京" },
+      { name: "有楽町" },
+      { name: "新橋" },
+      { name: "浜松町" },
+      { name: "田町" },
+      { name: "高輪ゲートウェイ" },
+      { name: "品川" },
+      { name: "大崎" },
+      { name: "五反田" },
+      { name: "目黒" },
+      { name: "恵比寿" },
+      { name: "渋谷" },
+      { name: "原宿" },
+      { name: "代々木" },
+      { name: "新宿" },
+      { name: "新大久保" },
+      { name: "高田馬場" },
+      { name: "目白" },
+      { name: "池袋" },
+      { name: "大塚" },
+      { name: "巣鴨" },
+      { name: "駒込" },
+      { name: "田端" },
+      { name: "西日暮里" },
+      { name: "日暮里" },
+      { name: "鶯谷" },
+      { name: "上野" },
+      { name: "御徒町" },
+      { name: "秋葉原" },
+      { name: "神田" }
+    ]
+  }
+});

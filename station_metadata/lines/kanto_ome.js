@@ -1,5 +1,6 @@
 // 路線別メタデータ: 青梅線（関東）
 window.stationMetadataChunks = window.stationMetadataChunks || {};
+window.railwayLineFileChunks = window.railwayLineFileChunks || {};
 Object.assign(window.stationMetadataChunks, {
   "立川": {
     nameKana: "たちかわ",
@@ -38,4 +39,22 @@ Object.assign(window.stationMetadataChunks, {
   "鳩ノ巣": { nameKana: "はとのす" },
   "白丸": { nameKana: "しろまる" },
   "奥多摩": { nameKana: "おくたま" }
+});
+
+Object.assign(window.railwayLineFileChunks, {
+  "kanto:ome": {
+    area: "関東",
+    operator: "JR東日本",
+    lineName: "青梅線",
+    lineNameKana: "おうめせん",
+    scope: "八王子支社",
+    directionGroups: ["中央方面"],
+    stations: [
+      { name: "立川" }, { name: "西立川" }, { name: "東中神" }, { name: "中神" }, { name: "昭島" },
+      { name: "拝島" }, { name: "牛浜" }, { name: "福生" }, { name: "羽村" }, { name: "小作" },
+      { name: "河辺" }, { name: "東青梅" }, { name: "青梅" }, { name: "宮ノ平" }, { name: "日向和田" },
+      { name: "石神前" }, { name: "二俣尾" }, { name: "軍畑" }, { name: "沢井" }, { name: "御嶽" },
+      { name: "川井" }, { name: "古里" }, { name: "鳩ノ巣" }, { name: "白丸" }, { name: "奥多摩" }
+    ]
+  }
 });
