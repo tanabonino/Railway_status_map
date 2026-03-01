@@ -232,6 +232,69 @@ const directionLinesFromLineMeta = buildDirectionLinesFromLineMeta(railwayLinesD
     "常磐線各駅停車": "JL",
     "東京モノレール線": "MO"
   };
+  const LINE_NAME_KANA_BY_NAME = {
+    "山手線": "やまのてせん",
+    "京浜東北線": "けいひんとうほくせん",
+    "東海道線": "とうかいどうせん",
+    "横須賀線": "よこすかせん",
+    "南武線": "なんぶせん",
+    "横浜線": "よこはません",
+    "相模線": "さがみせん",
+    "湘南新宿ライン": "しょうなんしんじゅくらいん",
+    "上野東京ライン": "うえのとうきょうらいん",
+    "宇都宮線": "うつのみやせん",
+    "高崎線": "たかさきせん",
+    "埼京線": "さいきょうせん",
+    "川越線": "かわごえせん",
+    "中央線快速電車": "ちゅうおうせんかいそくでんしゃ",
+    "中央・総武各駅停車": "ちゅうおう・そうぶかくえきていしゃ",
+    "総武快速線": "そうぶかいそくせん",
+    "京葉線": "けいようせん",
+    "武蔵野線": "むさしのせん",
+    "常磐線": "じょうばんせん",
+    "常磐線快速電車": "じょうばんせんかいそくでんしゃ",
+    "常磐線各駅停車": "じょうばんせんかくえきていしゃ",
+    "東京モノレール線": "とうきょうものれーるせん",
+    "羽越本線": "うえつほんせん",
+    "信越本線": "しんえつほんせん",
+    "上越線": "じょうえつせん",
+    "篠ノ井線": "しののいせん",
+    "中央本線": "ちゅうおうほんせん",
+    "白新線": "はくしんせん",
+    "磐越西線": "ばんえつさいせん",
+    "飯山線": "いいやません",
+    "越後線": "えちごせん",
+    "大糸線": "おおいとせん",
+    "小海線": "こうみせん",
+    "只見線": "ただみせん",
+    "弥彦線": "やひこせん",
+    "米坂線": "よねさかせん",
+    "奥羽本線": "おううほんせん",
+    "仙山線": "せんざんせん",
+    "仙石線": "せんせきせん",
+    "仙石東北ライン": "せんせきとうほくらいん",
+    "東北本線": "とうほくほんせん",
+    "石巻線": "いしのまきせん",
+    "大船渡線": "おおふなとせん",
+    "大船渡線ＢＲＴ": "おおふなとせんびーあーるてぃー",
+    "大湊線": "おおみなとせん",
+    "男鹿線": "おがせん",
+    "釜石線": "かまいしせん",
+    "北上線": "きたかみせん",
+    "気仙沼線": "けせんぬません",
+    "気仙沼線ＢＲＴ": "けせんぬませんびーあーるてぃー",
+    "五能線": "ごのうせん",
+    "水郡線": "すいぐんせん",
+    "田沢湖線": "たざわこせん",
+    "津軽線": "つがるせん",
+    "八戸線": "はちのへせん",
+    "陸羽西線": "りくうさいせん",
+    "陸羽東線": "りくうとうせん",
+    "磐越東線": "ばんえつとうせん",
+    "左沢線": "あてらざわせん",
+    "山田線": "やまだせん",
+    "花輪線": "はなわせん"
+  };
   const ROUTE_COLOR_BY_SYMBOL = {
     "JY": "#9acd32",
     "JK": "#00b2e5",
@@ -661,7 +724,7 @@ const directionLinesFromLineMeta = buildDirectionLinesFromLineMeta(railwayLinesD
   function formatLineTitle(line) {
     const rawName = (line && line.lineName) || "";
     const name = lineNameWithSymbol(line || rawName);
-    const kana = (line && line.lineNameKana) || "";
+    const kana = routeNameKanaForLine(line);
     if (!name) {
       return "";
     }
@@ -685,9 +748,16 @@ const directionLinesFromLineMeta = buildDirectionLinesFromLineMeta(railwayLinesD
 
     const nameMain = document.createElement("span");
     nameMain.className = "line-name-main";
-    const kana = (line && line.lineNameKana) || "";
-    nameMain.textContent = rawName ? (rawName + (kana ? " （" + kana + "）" : "")) : "";
+    nameMain.textContent = rawName || "";
     target.appendChild(nameMain);
+
+    const kana = routeNameKanaForLine(line);
+    if (kana) {
+      const kanaNode = document.createElement("span");
+      kanaNode.className = "line-name-kana";
+      kanaNode.textContent = kana;
+      target.appendChild(kanaNode);
+    }
   }
 
   function displayName(lineId) {
@@ -697,6 +767,33 @@ const directionLinesFromLineMeta = buildDirectionLinesFromLineMeta(railwayLinesD
     }
     const scope = line.scope ? " / " + line.scope : "";
     return "[" + line.area + "] " + lineNameWithSymbol(line) + scope;
+  }
+
+  function routeNameKanaForLine(line) {
+    const rawName = (line && line.lineName) || "";
+    return (line && line.lineNameKana) || LINE_NAME_KANA_BY_NAME[rawName] || "";
+  }
+
+  function countSameLineName(lineName) {
+    let count = 0;
+    Object.keys(railwayLinesData).forEach(function (lineId) {
+      const line = railwayLinesData[lineId] || {};
+      if (line.lineName === lineName) {
+        count += 1;
+      }
+    });
+    return count;
+  }
+
+  function displayScopeChipText(line) {
+    const lineSafe = line || {};
+    const scope = String(lineSafe.scope || "");
+    const stations = Array.isArray(lineSafe.stations) ? lineSafe.stations : [];
+    const isSplitNonKanto = lineSafe.area !== "関東" && countSameLineName(lineSafe.lineName) > 1;
+    if (isSplitNonKanto && stations.length >= 2) {
+      return stations[0].name + "～" + stations[stations.length - 1].name;
+    }
+    return scope || "管轄未設定";
   }
 
   function lineNameWithSymbol(lineOrName) {
@@ -1635,7 +1732,7 @@ const directionLinesFromLineMeta = buildDirectionLinesFromLineMeta(railwayLinesD
       areaChip.textContent = line.area;
       const scopeChip = document.createElement("span");
       scopeChip.className = "station";
-      scopeChip.textContent = line.scope || "管轄未設定";
+      scopeChip.textContent = displayScopeChipText(line);
       const badge = document.createElement("span");
       badge.className = "badge " + meta.badge;
       badge.textContent = meta.label;
