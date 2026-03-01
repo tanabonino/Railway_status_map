@@ -1,5 +1,6 @@
 // 路線別メタデータ: 水郡線（関東）
 window.stationMetadataChunks = window.stationMetadataChunks || {};
+window.railwayLineFileChunks = window.railwayLineFileChunks || {};
 Object.assign(window.stationMetadataChunks, {
   "水戸": {
     nameKana: "みと",
@@ -62,4 +63,26 @@ Object.assign(window.stationMetadataChunks, {
   "河合": { nameKana: "かわい" },
   "谷河原": { nameKana: "やがわら" },
   "常陸太田": { nameKana: "ひたちおおた" }
+});
+
+Object.assign(window.railwayLineFileChunks, {
+  "kanto:suigun": {
+    area: "関東",
+    operator: "JR東日本",
+    lineName: "水郡線",
+    lineNameKana: "すいぐんせん",
+    scope: "水戸支社",
+    directionGroups: ["常磐方面"],
+    stations: [
+      { name: "水戸" }, { name: "常陸青柳" }, { name: "常陸津田" }, { name: "後台" }, { name: "下菅谷" },
+      { name: "中菅谷" }, { name: "上菅谷" }, { name: "常陸鴻巣" }, { name: "常陸大宮" }, { name: "玉川村" },
+      { name: "野上原" }, { name: "山方宿" }, { name: "中舟生" }, { name: "下小川" }, { name: "西金" },
+      { name: "上小川" }, { name: "袋田" }, { name: "常陸大子" }, { name: "下野宮" }, { name: "矢祭山" },
+      { name: "東館" }, { name: "南石井" }, { name: "磐城石井" }, { name: "磐城塙" }, { name: "近津" },
+      { name: "中豊" }, { name: "磐城棚倉" }, { name: "磐城浅川" }, { name: "里白石" }, { name: "磐城石川" },
+      { name: "野木沢" }, { name: "川東" }, { name: "小塩江" }, { name: "谷田川" }, { name: "磐城守山" },
+      { name: "安積永盛" }, { name: "郡山" }, { name: "上菅谷" }, { name: "南酒出" }, { name: "額田" },
+      { name: "河合" }, { name: "谷河原" }, { name: "常陸太田" }
+    ]
+  }
 });

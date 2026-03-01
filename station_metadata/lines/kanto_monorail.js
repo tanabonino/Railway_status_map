@@ -1,5 +1,6 @@
 // 路線別メタデータ: 東京モノレール線（関東）
 window.stationMetadataChunks = window.stationMetadataChunks || {};
+window.railwayLineFileChunks = window.railwayLineFileChunks || {};
 Object.assign(window.stationMetadataChunks, {
   "浜松町": {
     nameKana: "はままつちょう",
@@ -27,5 +28,21 @@ Object.assign(window.stationMetadataChunks, {
   },
   "羽田空港第2ターミナル": {
     nameKana: "はねだくうこうだいにたーみなる"
+  }
+});
+
+Object.assign(window.railwayLineFileChunks, {
+  "kanto:monorail": {
+    area: "関東",
+    operator: "東京モノレール",
+    lineName: "東京モノレール線",
+    lineNameKana: "とうきょうものれーるせん",
+    scope: "東京モノレール",
+    routeSymbol: "MO",
+    directionGroups: ["東京モノレール線"],
+    stations: [
+      { name: "浜松町" }, { name: "天王洲アイル" }, { name: "大井競馬場前" },
+      { name: "流通センター" }, { name: "羽田空港第1ターミナル" }, { name: "羽田空港第2ターミナル" }
+    ]
   }
 });

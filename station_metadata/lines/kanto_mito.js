@@ -1,5 +1,6 @@
 // 路線別メタデータ: 水戸線（関東）
 window.stationMetadataChunks = window.stationMetadataChunks || {};
+window.railwayLineFileChunks = window.railwayLineFileChunks || {};
 Object.assign(window.stationMetadataChunks, {
   "小山": {
     nameKana: "おやま",
@@ -33,6 +34,22 @@ Object.assign(window.stationMetadataChunks, {
     nameKana: "ともべ",
     interchanges: [
       { toOperator: "JR東日本", toLine: "常磐線" }
+    ]
+  }
+});
+
+Object.assign(window.railwayLineFileChunks, {
+  "kanto:mito": {
+    area: "関東",
+    operator: "JR東日本",
+    lineName: "水戸線",
+    lineNameKana: "みとせん",
+    scope: "水戸支社",
+    directionGroups: ["常磐方面"],
+    stations: [
+      { name: "小山" }, { name: "小田林" }, { name: "結城" }, { name: "東結城" }, { name: "川島" },
+      { name: "玉戸" }, { name: "下館" }, { name: "新治" }, { name: "大和" }, { name: "岩瀬" },
+      { name: "羽黒" }, { name: "福原" }, { name: "稲田" }, { name: "笠間" }, { name: "宍戸" }, { name: "友部" }
     ]
   }
 });

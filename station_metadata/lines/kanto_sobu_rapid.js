@@ -1,5 +1,6 @@
 // 路線別メタデータ: 総武快速線（関東）
 window.stationMetadataChunks = window.stationMetadataChunks || {};
+window.railwayLineFileChunks = window.railwayLineFileChunks || {};
 Object.assign(window.stationMetadataChunks, {
   "東京": { nameKana: "とうきょう", interchanges: [{ toOperator: "東京メトロ", toLine: "丸ノ内線" }] },
   "新橋": { nameKana: "しんばし", interchanges: [{ toOperator: "都営", toLine: "浅草線" }, { toOperator: "東京メトロ", toLine: "銀座線" }, { toOperator: "ゆりかもめ", toLine: "東京臨海新交通臨海線" }] },
@@ -11,4 +12,20 @@ Object.assign(window.stationMetadataChunks, {
   "津田沼": { nameKana: "つだぬま", interchanges: [{ toOperator: "新京成", toLine: "新京成線", toStationName: "新津田沼" }] },
   "稲毛": { nameKana: "いなげ" },
   "千葉": { nameKana: "ちば", interchanges: [{ toOperator: "千葉都市モノレール", toLine: "1号線" }, { toOperator: "千葉都市モノレール", toLine: "2号線" }] }
+});
+
+Object.assign(window.railwayLineFileChunks, {
+  "kanto:sobu_rapid": {
+    area: "関東",
+    operator: "JR東日本",
+    lineName: "総武快速線",
+    lineNameKana: "そうぶかいそくせん",
+    scope: "千葉支社",
+    routeSymbol: "JO",
+    directionGroups: ["総武方面"],
+    stations: [
+      { name: "東京" }, { name: "新橋" }, { name: "品川" }, { name: "錦糸町" }, { name: "新小岩" },
+      { name: "市川" }, { name: "船橋" }, { name: "津田沼" }, { name: "稲毛" }, { name: "千葉" }
+    ]
+  }
 });

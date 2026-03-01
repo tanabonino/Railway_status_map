@@ -1,5 +1,6 @@
 // 路線別メタデータ: 常磐線（関東）
 window.stationMetadataChunks = window.stationMetadataChunks || {};
+window.railwayLineFileChunks = window.railwayLineFileChunks || {};
 Object.assign(window.stationMetadataChunks, {
   "上野": { nameKana: "うえの", interchanges: [{ toOperator: "東京メトロ", toLine: "銀座線" }, { toOperator: "東京メトロ", toLine: "日比谷線" }] },
   "日暮里": { nameKana: "にっぽり", interchanges: [{ toOperator: "京成", toLine: "本線" }] },
@@ -20,4 +21,22 @@ Object.assign(window.stationMetadataChunks, {
   "友部": { nameKana: "ともべ" },
   "赤塚": { nameKana: "あかつか" },
   "水戸": { nameKana: "みと", interchanges: [{ toOperator: "鹿島臨海鉄道", toLine: "大洗鹿島線" }] }
+});
+
+Object.assign(window.railwayLineFileChunks, {
+  "kanto:joban": {
+    area: "関東",
+    operator: "JR東日本",
+    lineName: "常磐線",
+    lineNameKana: "じょうばんせん",
+    scope: "水戸支社",
+    routeSymbol: "JJ",
+    directionGroups: ["常磐方面"],
+    stations: [
+      { name: "上野" }, { name: "日暮里" }, { name: "三河島" }, { name: "南千住" }, { name: "北千住" },
+      { name: "松戸" }, { name: "柏" }, { name: "我孫子" }, { name: "取手" }, { name: "藤代" },
+      { name: "龍ケ崎市" }, { name: "牛久" }, { name: "ひたち野うしく" }, { name: "荒川沖" }, { name: "土浦" },
+      { name: "石岡" }, { name: "友部" }, { name: "赤塚" }, { name: "水戸" }
+    ]
+  }
 });
