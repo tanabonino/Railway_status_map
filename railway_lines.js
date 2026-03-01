@@ -577,6 +577,10 @@ const directionLinesFromLineMeta = buildDirectionLinesFromLineMeta(railwayLinesD
     if (!selectedDirectionFilter || selectedDirectionFilter === "all") {
       return true;
     }
+    const explicitGroups = Array.isArray(line && line.directionGroups) ? line.directionGroups : [];
+    if (explicitGroups.length) {
+      return explicitGroups.indexOf(selectedDirectionFilter) !== -1;
+    }
     const lineName = (line && line.lineName) || "";
     const targets = DIRECTION_LINES[selectedDirectionFilter] || [];
     if (targets.indexOf(lineName) === -1) {
