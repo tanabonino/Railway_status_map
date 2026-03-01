@@ -1,7 +1,7 @@
 // 路線別メタデータ: 東北本線（東北）
 window.stationMetadataChunks = window.stationMetadataChunks || {};
 Object.assign(window.stationMetadataChunks, {
-  "黒磯": {"nameKana":"くろいそ","interchanges":[{"toOperator":"JR東日本","toLine":"宇都宮線（直通）"}]},
+  "黒磯": {"nameKana":"くろいそ"},
   "高久": {"nameKana":"たかく"},
   "黒田原": {"nameKana":"くろだはら"},
   "豊原": {"nameKana":"とよはら"},
@@ -24,7 +24,7 @@ Object.assign(window.stationMetadataChunks, {
   "松川": {"nameKana":"まつかわ"},
   "金谷川": {"nameKana":"かなやがわ"},
   "南福島": {"nameKana":"みなみふくしま"},
-  "福島": {"nameKana":"ふくしま","interchanges":[{"toOperator":"JR東日本","toLine":"東北新幹線"},{"toOperator":"JR東日本","toLine":"奥羽本線（山形新幹線直通）"}]},
+  "福島": {"nameKana":"ふくしま","interchanges":[{"toOperator":"JR東日本","toLine":"東北新幹線"},{"toOperator":"JR東日本","toLine":"奥羽本線"},{"toOperator":"JR東日本","toLine":"磐越西線"}]},
   "東福島": {"nameKana":"ひがしふくしま"},
   "伊達": {"nameKana":"だて"},
   "桑折": {"nameKana":"こおり"},
@@ -43,7 +43,7 @@ Object.assign(window.stationMetadataChunks, {
   "南仙台": {"nameKana":"みなみせんだい"},
   "太子堂": {"nameKana":"たいしどう"},
   "長町": {"nameKana":"ながまち","interchanges":[{"toOperator":"仙台市地下鉄","toLine":"南北線"}]},
-  "仙台": {"nameKana":"せんだい","interchanges":[{"toOperator":"JR東日本","toLine":"東北新幹線"},{"toOperator":"JR東日本","toLine":"秋田新幹線"},{"toOperator":"JR東日本","toLine":"仙山線"},{"toOperator":"JR東日本","toLine":"仙石線"},{"toOperator":"JR東日本","toLine":"仙石東北ライン"}]},
+  "仙台": {"nameKana":"せんだい","interchanges":[{"toOperator":"JR東日本","toLine":"東北新幹線"},{"toOperator":"JR東日本","toLine":"常磐線"},{"toOperator":"JR東日本","toLine":"仙石線"},{"toOperator":"JR東日本","toLine":"仙山線"}]},
   "東仙台": {"nameKana":"ひがしせんだい"},
   "岩切": {"nameKana":"いわきり","interchanges":[{"toOperator":"JR東日本","toLine":"利府支線"}]},
   "陸前山王": {"nameKana":"りくぜんさんのう"},
@@ -71,7 +71,7 @@ Object.assign(window.stationMetadataChunks, {
   "水沢": {"nameKana":"みずさわ"},
   "金ケ崎": {"nameKana":"かねがさき"},
   "六原": {"nameKana":"ろくはら"},
-  "北上": {"nameKana":"きたかみ","interchanges":[{"toOperator":"JR東日本","toLine":"東北新幹線"},{"toOperator":"JR東日本","toLine":"北上線"}]},
+  "北上": {"nameKana":"きたかみ","interchanges":[{"toOperator":"JR東日本","toLine":"北上線"},{"toOperator":"JR東日本","toLine":"東北新幹線"}]},
   "村崎野": {"nameKana":"むらさきの"},
   "花巻": {"nameKana":"はなまき","interchanges":[{"toOperator":"JR東日本","toLine":"釜石線"}]},
   "花巻空港": {"nameKana":"はなまきくうこう"},
@@ -82,5 +82,5 @@ Object.assign(window.stationMetadataChunks, {
   "矢幅": {"nameKana":"やはば"},
   "岩手飯岡": {"nameKana":"いわていいおか"},
   "仙北町": {"nameKana":"せんぼくちょう"},
-  "盛岡": {"nameKana":"もりおか","interchanges":[{"toOperator":"JR東日本","toLine":"東北新幹線"},{"toOperator":"JR東日本","toLine":"秋田新幹線"},{"toOperator":"JR東日本","toLine":"田沢湖線"},{"toOperator":"JR東日本","toLine":"山田線"},{"toOperator":"IGRいわて銀河鉄道","toLine":"いわて銀河鉄道"}]},
+  "盛岡": {"nameKana":"もりおか","interchanges":[{"toOperator":"JR東日本","toLine":"東北新幹線"},{"toOperator":"JR東日本","toLine":"田沢湖線"},{"toOperator":"JR東日本","toLine":"山田線"}]},
 });

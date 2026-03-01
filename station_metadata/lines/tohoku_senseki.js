@@ -1,7 +1,7 @@
 // 路線別メタデータ: 仙石線（東北）
 window.stationMetadataChunks = window.stationMetadataChunks || {};
 Object.assign(window.stationMetadataChunks, {
-  "あおば通": {"nameKana":"あおばどおり","interchanges":[{"toOperator":"JR東日本","toLine":"東北本線・東北新幹線・仙山線","toStationName":"仙台駅（地下連絡）"}]},
+  "あおば通": {"nameKana":"あおばどおり","interchanges":[{"toOperator":"仙台市地下鉄","toLine":"南北線・東西線","toStationName":"仙台駅接続"}]},
   "仙台": {"nameKana":"せんだい","interchanges":[{"toOperator":"JR東日本","toLine":"東北新幹線"},{"toOperator":"JR東日本","toLine":"東北本線"},{"toOperator":"JR東日本","toLine":"仙山線"},{"toOperator":"JR東日本","toLine":"常磐線"}]},
   "榴ケ岡": {"nameKana":"つつじがおか"},
   "宮城野原": {"nameKana":"みやぎのはら"},
@@ -30,6 +30,5 @@ Object.assign(window.stationMetadataChunks, {
   "東矢本": {"nameKana":"ひがしやもと"},
   "陸前赤井": {"nameKana":"りくぜんあかい"},
   "蛇田": {"nameKana":"へびた"},
-  "石巻あゆみ野": {"nameKana":"いしのまきあゆみの"},
   "石巻": {"nameKana":"いしのまき","interchanges":[{"toOperator":"JR東日本","toLine":"石巻線"}]},
 });

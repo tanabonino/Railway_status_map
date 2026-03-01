@@ -330,7 +330,7 @@ const directionLinesFromLineMeta = buildDirectionLinesFromLineMeta(railwayLinesD
   const lineNameIndex = buildLineNameIndex();
   const state = createInitialState();
   let selectedDirectionFilter = loadDirectionFilter();
-  let selectedStation = loadSelectedStation();
+  let selectedStation = refreshSelectedStationSnapshot(loadSelectedStation());
 
   const ui = {
     rawText: document.getElementById("rawText"),
@@ -418,7 +418,7 @@ const directionLinesFromLineMeta = buildDirectionLinesFromLineMeta(railwayLinesD
     if (ui.clearAllStatus) {
       ui.clearAllStatus.addEventListener("click", function () {
         Object.keys(railwayLinesData).forEach(function (lineId) {
-          clearLineState(lineId);
+          clearLineState(lineId, { clearReadAt: true });
         });
         persistState();
         render();
@@ -486,6 +486,32 @@ const directionLinesFromLineMeta = buildDirectionLinesFromLineMeta(railwayLinesD
     } catch (_) {
       return null;
     }
+  }
+
+  function refreshSelectedStationSnapshot(snapshot) {
+    if (!snapshot || !snapshot.lineId || !snapshot.stationName) {
+      return snapshot || null;
+    }
+    const line = railwayLinesData[snapshot.lineId];
+    if (!line || !Array.isArray(line.stations)) {
+      return snapshot;
+    }
+    const station = line.stations.find(function (st) {
+      return normalizeStationToken(st && st.name) === normalizeStationToken(snapshot.stationName);
+    });
+    if (!station) {
+      return snapshot;
+    }
+    return {
+      key: snapshot.key || makeStationKey(snapshot.lineId, station.name, ""),
+      lineId: snapshot.lineId,
+      lineName: line.lineName || snapshot.lineName || "",
+      lineScope: line.scope || snapshot.lineScope || "",
+      lineArea: line.area || snapshot.lineArea || "",
+      stationName: station.name || snapshot.stationName || "",
+      stationKana: detectStationKana(station) || snapshot.stationKana || "",
+      interchanges: cleanInterchanges(station.interchanges || [])
+    };
   }
 
   function saveSelectedStation() {
@@ -910,11 +936,12 @@ const directionLinesFromLineMeta = buildDirectionLinesFromLineMeta(railwayLinesD
     }
   }
 
-  function clearLineState(lineId) {
+  function clearLineState(lineId, options) {
+    const opts = options || {};
     ensureLine(lineId);
     state[lineId] = defaultLineState();
     state[lineId].isCleared = true;
-    state[lineId].updatedAt = nowLabel();
+    state[lineId].updatedAt = opts.clearReadAt ? "" : nowLabel();
   }
 
   function handleParse() {
@@ -1615,7 +1642,8 @@ const directionLinesFromLineMeta = buildDirectionLinesFromLineMeta(railwayLinesD
 
       const readAt = document.createElement("span");
       readAt.className = "read-at";
-      readAt.textContent = "データ読込時刻: " + (summary.updatedAt || s.updatedAt || "未更新");
+      const updatedLabel = summary.updatedAt || s.updatedAt || "";
+      readAt.textContent = updatedLabel ? ("データ読込時刻: " + updatedLabel) : "データ読込時刻:";
 
       headMain.appendChild(title);
       headMain.appendChild(areaChip);

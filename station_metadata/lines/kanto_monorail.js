@@ -2,11 +2,11 @@
 window.stationMetadataChunks = window.stationMetadataChunks || {};
 window.railwayLineFileChunks = window.railwayLineFileChunks || {};
 Object.assign(window.stationMetadataChunks, {
-  "浜松町": {
-    nameKana: "はままつちょう",
+  "モノレール浜松町": {
+    nameKana: "ものれーるはままつちょう",
     interchanges: [
-      { toOperator: "都営", toLine: "大江戸線", toStationName: "大門" },
-      { toOperator: "都営", toLine: "浅草線", toStationName: "大門" },
+      { toOperator: "都営地下鉄", toLine: "浅草線", toStationName: "大門駅" },
+      { toOperator: "都営地下鉄", toLine: "大江戸線", toStationName: "大門駅" },
       { toOperator: "JR東日本", toLine: "山手線" },
       { toOperator: "JR東日本", toLine: "京浜東北線" }
     ]
@@ -22,6 +22,27 @@ Object.assign(window.stationMetadataChunks, {
   },
   "流通センター": {
     nameKana: "りゅうつうせんたー"
+  },
+  "昭和島": {
+    nameKana: "しょうわじま"
+  },
+  "整備場": {
+    nameKana: "せいびじょう"
+  },
+  "天空橋": {
+    nameKana: "てんくうばし",
+    interchanges: [
+      { toOperator: "京急電鉄", toLine: "空港線" }
+    ]
+  },
+  "羽田空港第3ターミナル": {
+    nameKana: "はねだくうこうだいさんたーみなる",
+    interchanges: [
+      { toOperator: "京急電鉄", toLine: "空港線" }
+    ]
+  },
+  "新整備場": {
+    nameKana: "しんせいびじょう"
   },
   "羽田空港第1ターミナル": {
     nameKana: "はねだくうこうだいいちたーみなる"
@@ -41,8 +62,10 @@ Object.assign(window.railwayLineFileChunks, {
     routeSymbol: "MO",
     directionGroups: ["東京モノレール線"],
     stations: [
-      { name: "浜松町" }, { name: "天王洲アイル" }, { name: "大井競馬場前" },
-      { name: "流通センター" }, { name: "羽田空港第1ターミナル" }, { name: "羽田空港第2ターミナル" }
+      { name: "モノレール浜松町" }, { name: "天王洲アイル" }, { name: "大井競馬場前" },
+      { name: "流通センター" }, { name: "昭和島" }, { name: "整備場" },
+      { name: "天空橋" }, { name: "羽田空港第3ターミナル" }, { name: "新整備場" },
+      { name: "羽田空港第1ターミナル" }, { name: "羽田空港第2ターミナル" }
     ]
   }
 });
